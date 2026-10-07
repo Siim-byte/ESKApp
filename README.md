@@ -3,6 +3,7 @@ rakenduses saab vaatada erinavaid skateparke üle eesti maakese
 ### tegijad
 - Saimon siipan
 - Siim Belõi
+- Airon Tatrik
 
 ### arendaja keskkona seadistamine ja projekti käivaitamine
 
