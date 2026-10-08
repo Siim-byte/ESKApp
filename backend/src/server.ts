@@ -2,25 +2,24 @@ import express, { type Request, type Response } from "express"
 
 const app: express.Express = express()
 app.use(express.json())
-
-const PORT: number = Number(process.env.PORT) || 3000
-
-// Defineerime andmetüübi
-interface Skatepark {
-  id: number;
-  name: string;
-}
-
-// Lemmikute näidisandmed
-const favorites: Skatepark[] = [
-  { id: 1, name: "Männiku skatepark" },
-  { id: 2, name: "Pärnu sisehall" },
-  { id: 3, name: "Tähtvere skatepark" }
+const PORT = process.env.PORT || 3000
+const details =[
+    {id: 1, name: "skatepark1", city: "Tallinn"},
+    {id: 2, name: "skatepark2", city: "Tartu"},
+    {id: 3, name: "skatepark3", city: "Tallinn"},
 ]
+app.get("/", (req:Request, res: Response) => {
+    res.send("Töötab.")
+})
 
-// Avalehe kontroll
-app.get("/", (_req: Request, res: Response) => {
-  res.send("Töötab.")
+app.get("/ratings", (req:Request, res: Response) => {
+    const result = ratings.map((rating) => ({ id: rating.id, rate: rating.rate }))
+    res.send(result)
+})
+
+app.get("/ratings", (req:Request, res: Response) => {
+    const result = ratings.map((rating) => ({ id: rating.id, rate: rating.rate }))
+    res.send(result)
 })
 
 // Lemmikute nimekirja tagastamine
