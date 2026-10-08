@@ -18,11 +18,12 @@ const details = [
     { id: 3, name: "skatepark3", city: "Tallinn" },
 ]
 
-// Lemmikute näidisandmed
+let nextfavoriteId = 1
+
 const favorites = [
-    { id: 1, name: "Männiku skatepark" },
-    { id: 2, name: "Pärnu sisehall" },
-    { id: 3, name: "Tähtvere skatepark" }
+    { id: nextfavoriteId++, name: "Männiku skatepark" },
+    { id: nextfavoriteId++, name: "Pärnu sisehall" },
+    { id: nextfavoriteId++, name: "Tähtvere skatepark" }
 ]
 
 app.get("/", (req: Request, res: Response) => {
@@ -72,7 +73,6 @@ app.get("/details/:id", (req: Request, res: Response) => {
     res.send(result)
 })
 
-// --- SINU OSA (FAVORITES) ---
 
 app.get("/favorites", (req: Request, res: Response) => {
     const result = favorites.map((favorite) => ({ id: favorite.id, name: favorite.name }))
@@ -96,6 +96,20 @@ app.get("/favorites/:id", (req: Request, res: Response) => {
         return
     }
     res.send(result)
+})
+app.post("/favorites", (req: Request, res: Response) => {
+    if (!req.body || !req.body.name) {
+        res.status(400).send({ error: "Missing name in request body" })
+        return
+    }
+
+    const newFavorite = {
+        id: favorites.length > 0 ? Math.max(...favorites.map(f => f.id)) + 1 : 1,
+        name: req.body.name
+    }
+
+    favorites.push(newFavorite)
+    res.status(201).send(newFavorite)
 })
 
 app.listen(PORT, () => {
