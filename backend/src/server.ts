@@ -72,7 +72,6 @@ app.get("/details/:id", (req: Request, res: Response) => {
     res.send(result)
 })
 
-// --- SINU OSA (FAVORITES) ---
 
 app.get("/favorites", (req: Request, res: Response) => {
     const result = favorites.map((favorite) => ({ id: favorite.id, name: favorite.name }))
