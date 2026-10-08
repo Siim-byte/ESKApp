@@ -1,31 +1,11 @@
-import express, { type Request, type Response } from "express"
+import express, { type Request, type Response, type NextFunction } from "express"
 
 const app: express.Express = express()
 app.use(express.json())
+const PORT = process.env.PORT || 3000
 
-const PORT: number = Number(process.env.PORT) || 3000
-
-// Defineerime andmetüübi (ainult id ja name)
-interface Skatepark {
-  id: number;
-  name: string;
-}
-
-
-const favorites: Skatepark[] = [
-  { id: 1, name: "Männiku skatepark" },
-  { id: 2, name: "Pärnu sisehall" },
-  { id: 3, name: "Tähtvere skatepark" }
-]
-
-app.get("/", (_req: Request, res: Response) => {
-  res.send("Töötab.")
-})
-
-
-app.get("/favorites", (_req: Request, res: Response) => {
-    const result = favorites.map((favorite) => ({id: favorite.id, name: favorite.name}))
-  res.json(result)
+app.get("/", (req:Request, res: Response) => {
+    res.send("Töötab.")
 })
 
 app.listen(PORT, () => {
