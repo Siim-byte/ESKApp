@@ -25,6 +25,21 @@ app.get("/ratings", (req:Request, res: Response) => {
     res.send(result)
 })
 
+app.get("/ratings/:id", (req: Request, res: Response) => {
+    if (!req.params.id) {
+        return res.status(400).send({ error: "ID required" })
+    }
+    
+    const ratingId = req.params.id ? typeof req.params.id === "string" ? parseInt(req.params.id) : parseInt(req.params.id[0]!) : null
+    const result = ratings.map((rating) => rating.id === ratingId ? rating : undefined).filter(Boolean)[0]
+    
+    if (result === undefined) {
+        return res.status(404).send({ error: "Rating not found" })
+    }
+    res.send(result)
+})
+
+
 app.get("/details", (req: Request, res: Response) => {
     const result = details.map((detail) => ({id: detail.id, name: detail.name}))   
     res.send(result)
