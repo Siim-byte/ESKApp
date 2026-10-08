@@ -30,6 +30,25 @@ app.get("/details", (req: Request, res: Response) => {
     res.send(result)
 })
 
+app.get("/details/:id", (req: Request, res: Response) => {
+    if (!req.params.id) {
+        res.status(400).send({error: "Missing id parameter"})
+        return
+    }
+    const detailId = req.params.id ?
+        typeof req.params.id === "string" ?
+            parseInt(req.params.id) 
+            : parseInt(req.params.id[0]!) 
+         : null
+            
+    const result = details.find(detail => detail.id === detailId);
+    if (result === undefined) {
+        res.status(404).send({error: "Detail not found"})
+        return
+    }
+    res.send(result)
+})
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
 })
