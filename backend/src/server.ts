@@ -5,12 +5,13 @@ const app = express()
 app.use(express.json())
 const PORT = process.env.PORT || 3000
 
+let nextRatingId = 1;
 const ratings = [
-    { id: 1, rate: "1" },
-    { id: 2, rate: "2" },
-    { id: 3, rate: "3" },
-    { id: 4, rate: "4" },
-    { id: 5, rate: "5" }
+    { id: nextRatingId++, rate: "1" },
+    { id: nextRatingId++, rate: "2" },
+    { id: nextRatingId++, rate: "3" },
+    { id: nextRatingId++, rate: "4" },
+    { id: nextRatingId++, rate: "5" }
 ]
 let nextSkateparkId = 1
 const skateparks: { id: number; name: string; city: string }[] = [
@@ -54,6 +55,21 @@ app.get("/ratings/:id", (req: Request, res: Response) => {
         return res.status(404).send({ error: "Rating not found" })
     }
     res.send(result)
+})
+
+app.post('/ratings', (req: Request, res: Response) => {
+    if (!req.body?.rate) {
+        return res.status(400).send({ error: 'Required parameter: rate' })
+    }
+const newRating = {
+        id: nextRatingId++,
+        rate: req.body.rate
+    }
+    
+    ratings.push(newRating)
+    res.status(201)
+    .location(`https:localhost${PORT}/ratings/` + (newRating.id))
+    .send(newRating)
 })
 
 app.get("/details", (req: Request, res: Response) => {
