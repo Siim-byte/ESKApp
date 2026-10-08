@@ -1,5 +1,6 @@
 import express, { type Request, type Response, type NextFunction } from "express"
 
+
 const app = express()
 app.use(express.json())
 const PORT = process.env.PORT || 3000
@@ -10,6 +11,12 @@ const ratings = [
     { id: 3, rate: "3" },
     { id: 4, rate: "4" },
     { id: 5, rate: "5" }
+]
+let nextSkateparkId = 1
+const skateparks: { id: number; name: string; city: string }[] = [
+    { id: nextSkateparkId++, name: "skatepark1", city: "Tallinn" },
+    { id: nextSkateparkId++, name: "skatepark2", city: "Tartu" },
+    { id: nextSkateparkId++, name: "skatepark3", city: "Tallinn" },
 ]
 
 const details = [
@@ -97,6 +104,41 @@ app.get("/favorites/:id", (req: Request, res: Response) => {
     }
     res.send(result)
 })
+app.get("/skateparks", (req: Request, res: Response) => {
+    const result = skateparks.map((skatepark) => ({ id: skatepark.id, name: skatepark.name, city: skatepark.city }))
+    res.send(result)
+})
+app.get("/skateparks/:id", (req: Request, res: Response) => {
+    const skateparkId = req.params.id ? typeof req.params.id === "string" ? parseInt(req.params.id) : parseInt(req.params.id[0]!) : null
+    const result = skateparks.find(skatepark => skatepark.id === skateparkId);
+    if (!result) {
+        res.status(404).send({ error: "Skatepark not found" });
+        return;
+    }
+    res.send(result);
+});
+
+app.post("/skateparks", (req:Request, res: Response) => {
+
+    const name = req.body?.name;
+    const city  = req.body?.city;
+    if (!name) {
+        res.status(400).send({ error: "Missing name parameter" })
+        return
+    }
+    if (!city) {
+        res.status(400).send({ error: "Missing city parameter" })
+        return
+    }
+    const newID = Math.max(...skateparks.map(p => p.id)) + 1
+    const newSkatepark = {
+        id: nextSkateparkId++,
+        name: name,
+        city: city
+    };
+    skateparks.push(newSkatepark);
+    res.status(201).send(newSkatepark);
+});
 app.post("/favorites", (req: Request, res: Response) => {
     if (!req.body || !req.body.name) {
         res.status(400).send({ error: "Missing name in request body" })
