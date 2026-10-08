@@ -1,4 +1,4 @@
-import express, { type Request, type Response, type NextFunction } from "express"
+import express, { type Request, type Response, type NextFunction} from "express"
 
 const app = express()
 app.use(express.json())
@@ -11,13 +11,22 @@ const ratings = [
     {id: 4, rate: "4"},
     {id: 5, rate: "5"}
 ]
-
+const details =[
+    {id: 1, name: "skatepark1", city: "Tallinn"},
+    {id: 2, name: "skatepark2", city: "Tartu"},
+    {id: 3, name: "skatepark3", city: "Tallinn"},
+]
 app.get("/", (req:Request, res: Response) => {
     res.send("Töötab.")
 })
 
 app.get("/ratings", (req:Request, res: Response) => {
     const result = ratings.map((rating) => ({ id: rating.id, rate: rating.rate }))
+    res.send(result)
+})
+
+app.get("/details", (req: Request, res: Response) => {
+    const result = details.map((detail) => ({id: detail.id, name: detail.name}))   
     res.send(result)
 })
 
