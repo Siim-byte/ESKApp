@@ -1,3 +1,7 @@
+declare const process: {
+    env: Record<string, string | undefined>;
+};
+
 import { Sequelize, DataTypes } from 'sequelize';
 import SkateparkModel from './models/skatepark.ts'; 
 
