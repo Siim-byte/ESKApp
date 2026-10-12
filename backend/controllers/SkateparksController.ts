@@ -3,7 +3,8 @@ import { db } from "../db.js";
 import Utilities from "../Utilities.ts";
 import { v7 as uuidv7 } from "uuid";
 
-export const create = async (req: Request, res: Response) => {
+const SkateparksController = {
+        async create(req: Request, res: Response){
     if (
         !req.body.name || 
         !req.body.description ||
@@ -15,7 +16,7 @@ export const create = async (req: Request, res: Response) => {
     ) {
         return res.status(400).send(
             {
-                error: "Missing required fields: name, description, city, aadress"
+                error: "Missing parameters, please review data"
             }
         );
     
@@ -37,3 +38,6 @@ export const create = async (req: Request, res: Response) => {
     return res
     .location(`${Utilities.getBaseUrl(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
 }
+}
+
+export default SkateparksController
