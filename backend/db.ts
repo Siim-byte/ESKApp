@@ -1,9 +1,5 @@
-declare const process: {
-    env: Record<string, string | undefined>;
-};
-
 import { Sequelize, DataTypes } from 'sequelize';
-import SkateparkModel from './models/skatepark.ts'; 
+import SkateparkModel from "./models/skatepark.js"; 
 
 const sequelize = new Sequelize(
     process.env.DB_NAME!,
