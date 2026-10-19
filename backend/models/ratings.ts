@@ -21,6 +21,16 @@ export default function RatingModel(
                 type: dataTypes.INTEGER,
                 allowNull: false,
             },
+            rating: {
+                type: dataTypes.STRING,
+            },
+            created_at: {
+                type: dataTypes.DATE,
+            },
+            update_at: {
+                type: dataTypes.DATE,
+            },
+
 
         }
     )
