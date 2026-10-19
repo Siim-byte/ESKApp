@@ -34,4 +34,7 @@ export default function RatingModel(
 
         }
     )
+    console.log(Rating === sequelize.models.Rating);
+    return Rating;
+    
 }
