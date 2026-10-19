@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { db } from "../db.js";
-import Utilities from "../Utilities.ts";
+import Utilities from "./Utilities.ts";
 import { v7 as uuidv7 } from "uuid";
 
 const SkateparksController = {
@@ -34,10 +34,22 @@ const SkateparksController = {
         updated_at: Utilities.getCurrentDateTime(),
     }
     const createdSkatepark = (await db.skateparkModel.create(newSkatepark)) as unknown as { id: string };
-
     return res
     .location(`${Utilities.getBaseUrl(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
-}
+},
+    async getAll(req: Request, res: Response) {
+        const skateparks = await db.skateparks.findAll();
+        console.log("GetAll: "+skateparks)
+        return res
+        .status(200)
+        .send(
+            skateparks.map
+            (
+                ({Id, name}) => {return {Id, name}}
+            )
+        )
+        
+    }
 }
 
 export default SkateparksController

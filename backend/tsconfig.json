@@ -18,6 +18,8 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "rewriteRelativeImportExtensions": true,
+    "allowImportingTsExtensions": true,
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
@@ -41,5 +43,6 @@
     "skipLibCheck": true,
   },
   "include": ["src/**/*"],
+  "include": ["../d"],
   "exclude": ["node_modules"]
 }
