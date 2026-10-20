@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import SkateparkModel from "../backend/models/Skatepark.ts"; 
+import UserModel from "../backend/models/Users.ts";
 
 const sequelize = new Sequelize(
     process.env.DB_NAME!,
@@ -24,7 +25,8 @@ const connect = async (): Promise<void> => {
 const db = {
     Sequelize, 
     sequelize,
-    skateparks: require("../backend/models/skatepark.ts")(sequelize, DataTypes)
+    skateparks: require("../backend/models/skatepark.ts")(sequelize, DataTypes),
+    users: require("../backend/models/Users.ts")(sequelize, DataTypes),
 };
 
 const sync = async(): Promise<void> => {

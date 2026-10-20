@@ -62,7 +62,7 @@ const SkateparksController = {
         }
         return skatepark
     },
-    async modifyById(req: Request, res: Response) {
+    async modifyByID(req: Request, res: Response) {
         const skateparkToBeModified = await this.getByID(req,res)
         if (!skateparkToBeModified) {
             return;
