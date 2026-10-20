@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes } from 'sequelize';
-import SkateparkModel from "./models/skatepark.js"; 
+import SkateparkModel from "../backend/models/Skatepark.ts"; 
 
 const sequelize = new Sequelize(
     process.env.DB_NAME!,
@@ -24,16 +24,12 @@ const connect = async (): Promise<void> => {
 const db = {
     Sequelize, 
     sequelize,
-    skateparkModel: SkateparkModel(sequelize, DataTypes)
+    skateparks: require("../backend/models/skatepark.ts")(sequelize, DataTypes)
 };
 
-const sync = async (): Promise<void> => {
-    try {
-        await sequelize.sync({ alter: true });
-        console.log("DB is synced");
-    } catch (error) {
-        console.error("DB sync error:", error);
-    }
-};
+const sync = async(): Promise<void> => {
+    await sequelize.sync({alter:true})
+    console.log("DB is synced")
+}
 
 export { db, sync, connect };

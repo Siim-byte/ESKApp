@@ -33,7 +33,7 @@ const SkateparksController = {
         created_at: Utilities.getCurrentDateTime(),
         updated_at: Utilities.getCurrentDateTime(),
     }
-    const createdSkatepark = (await db.skateparkModel.create(newSkatepark)) as unknown as { id: string };
+    const createdSkatepark = await db.skateparks.create(newSkatepark);
     return res
     .location(`${Utilities.getBaseUrl(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
 },
@@ -49,6 +49,19 @@ const SkateparksController = {
             )
         )
         
+    },
+    async getByID(req: Request<{Id: string}>, res: Response) { //fix rida 54 skateparkID string arrayle    
+    //async getByID(req: Request, res: Response)
+        const skateparkID: string = req.params.Id
+        console.log(skateparkID)
+        const skatepark = await db.skateparks.findByPk(skateparkID);
+        if (!skatepark) {
+            res.status(404).send({
+                error: `Skatepark with this ID is not found. ${skateparkID}`
+            })
+            return null;
+        }
+        return skatepark
     }
 }
 
