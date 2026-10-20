@@ -50,9 +50,8 @@ const SkateparksController = {
         )
         
     },
-    async getByID(req: Request<{Id: string}>, res: Response) { //fix rida 54 skateparkID string arrayle    
-    //async getByID(req: Request, res: Response)
-        const skateparkID: string = req.params.Id
+    async getByID(req: Request, res: Response) {
+        let skateparkID: string = req.params.Id as string
         console.log(skateparkID)
         const skatepark = await db.skateparks.findByPk(skateparkID);
         if (!skatepark) {
@@ -62,6 +61,39 @@ const SkateparksController = {
             return null;
         }
         return skatepark
+    },
+    async modifyById(req: Request, res: Response) {
+        const skateparkToBeModified = await this.getByID(req,res)
+        if (!skateparkToBeModified) {
+            return;
+        }
+        if (
+            !req.body.name || 
+            !req.body.description ||
+            !req.body.city ||
+            !req.body.aadress ||
+            !req.body.latitude ||
+            !req.body.longitude ||
+            !req.body.admin_id
+        ) {
+            return res.status(400).send(
+                {
+                    error: "Missing parameters, please review data"
+                }
+            )
+        }
+        skateparkToBeModified.name = req.body.name
+        skateparkToBeModified.description = req.body.description
+        skateparkToBeModified.city = req.body.city
+        skateparkToBeModified.aadress = req.body.aadress
+        skateparkToBeModified.latitude = req.body.latitude
+        skateparkToBeModified.longitude = req.body.longitude
+        
+        await skateparkToBeModified.save()
+
+        return res.location(`${Utilities.getBaseUrl(req)}/skateparks/${skateparkToBeModified.id}`)
+        .status(201)
+        .send(skateparkToBeModified)
     }
 }
 
