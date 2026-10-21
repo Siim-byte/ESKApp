@@ -8,16 +8,16 @@ export default function RatingModel(
     const Rating = sequelize.define(
         "Rating",
         {
-            id: {
+            RatingsID: {
                 type: dataTypes.UUID,
                 defaultValue: dataTypes.UUIDV4,
                 primaryKey: true,
             },
-            user_id: {
+            UserID: {
                 type: dataTypes.INTEGER,
                 allowNull: false,
             },
-            skatepark_id: {
+            skateparkid: {
                 type: dataTypes.INTEGER,
                 allowNull: false,
             },

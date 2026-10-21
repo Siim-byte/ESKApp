@@ -5,7 +5,7 @@ export default function UserModel(
   dataTypes: typeof DataTypes
 ) {
   return sequelize.define("User", {
-    id: {
+    UserID: {
       type: dataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true

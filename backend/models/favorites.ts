@@ -1,31 +1,34 @@
 import { Sequelize, DataTypes } from "sequelize";
 
-export default function FavoriteModel(
+export default function UserFavoriteModel(
   sequelize: Sequelize,
   dataTypes: typeof DataTypes
 ) {
-    const Favorite = sequelize.define(
-        "Favorite",
+    const UserFavorite = sequelize.define(
+        "UserFavorite",
         {
-            id: {
+            FavoritesID: {
                 type:dataTypes.UUID,
                 defaultValue: dataTypes.UUIDV4,
                 primaryKey: true,
             },
-            user_id: {
+            //võõrvõtmed
+            userID: {
                 type: dataTypes.UUID,
-                allowNull: false,
+                allowNull: false
+                
             },
-            skatepark_id: {
+            skateparkID: {
                 type: dataTypes.UUID,
-                allowNull: false,
+                allowNull: false
             },
+            ////
             created_at: {
                 type:dataTypes.DATE,
             },
         },
     );
-    console.log(Favorite === sequelize.models.Favorite);
-    return Favorite;
+    console.log(UserFavorite === sequelize.models.Favorite);
+    return UserFavorite;
     
 }

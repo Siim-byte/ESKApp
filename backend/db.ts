@@ -1,6 +1,7 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import SkateparkModel from "../backend/models/Skatepark.ts"; 
 import UserModel from "../backend/models/Users.ts";
+import UserFavoriteModel from './models/favorites.ts';
 
 const sequelize = new Sequelize(
     process.env.DB_NAME!,
@@ -27,8 +28,15 @@ const db = {
     sequelize,
     skateparks: require("../backend/models/skatepark.ts")(sequelize, DataTypes),
     users: require("../backend/models/Users.ts")(sequelize, DataTypes),
+    userFavorites: require("./models/favorites.ts")(sequelize, DataTypes)
 };
+db.userFavorites = require("./models/favorites.ts")(sequelize, DataTypes, db.skateparks, db.users)
+db.skateparks.BelongsToMany(db.users,{through: db.userFavorites, as: "userid"})
+db.users.belongsTo(db.skateparks, {through: db.userFavorites, as: "skateparkid"})
 
+
+db.users.HasMany(db.userFavorites, {foreignKey: "userid" as "skateparkid"})
+db.userFavorites.BelongsTo(db.users, {foreignKey: "userid" as "skateparkid"})
 const sync = async(): Promise<void> => {
     await sequelize.sync({alter:true})
     console.log("DB is synced")

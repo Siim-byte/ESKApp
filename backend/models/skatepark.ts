@@ -7,7 +7,7 @@ export default function SkateparkModel(
   const Skatepark = sequelize.define(
     "Skatepark",
     {
-      id: {
+      SkateparkID: {
         type: dataTypes.UUID,
         defaultValue: dataTypes.UUIDV4,
         primaryKey: true,

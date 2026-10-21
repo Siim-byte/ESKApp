@@ -35,7 +35,7 @@ const SkateparksController = {
     }
     const createdSkatepark = await db.skateparks.create(newSkatepark);
     return res
-    .location(`${Utilities.getBaseUrl(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
+    .location(`${Utilities.getBaseUrl(req)}/skateparks/${createdSkatepark.SkateparkID}`).sendStatus(201);
 },
     async getAll(req: Request, res: Response) {
         const skateparks = await db.skateparks.findAll();
@@ -51,7 +51,7 @@ const SkateparksController = {
         
     },
     async getByID(req: Request, res: Response) {
-        let skateparkID: string = req.params.Id as string
+        let skateparkID: string = req.params.SkateparkID as string
         console.log(skateparkID)
         const skatepark = await db.skateparks.findByPk(skateparkID);
         if (!skatepark) {
