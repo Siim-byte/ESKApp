@@ -91,7 +91,7 @@ const SkateparksController = {
         
         await skateparkToBeModified.save()
 
-        return res.location(`${Utilities.getBaseUrl(req)}/skateparks/${skateparkToBeModified.id}`)
+        return res.location(`${Utilities.getBaseURL(req)}/skateparks/${skateparkToBeModified.id}`)
         .status(201)
         .send(skateparkToBeModified)
     }

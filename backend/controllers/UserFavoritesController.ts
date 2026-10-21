@@ -7,8 +7,8 @@ import { UUID } from "node:crypto";
 
 const UserFavoritesController = {
     async create(req: Request, res: Response) {
-        const UserWhoUploaded = "userid"
-        const skateparkidToBeAddedToCollection = ["skateparkid"]
+        const UserWhoUploaded = "UserID"
+        const skateparkidToBeAddedToCollection = ["SkateparkID"]
         //check if req body has a user id
         //if not, use status 403
         //else, add into object to be created
