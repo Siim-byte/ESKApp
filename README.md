@@ -19,4 +19,4 @@ Link to project https://github.com/users/Siim-byte/projects/4
 1. konstrueeri produktsiooni kood käsuga `npm run build`
 1. käivita toodangu kood käsuga `npm run start`
 
-<img width="927" height="727" alt="{CCAF14D8-D7FB-4661-BB94-B6517BA9B5B0}" src="https://github.com/user-attachments/assets/abcaae9e-f239-48e1-b2eb-a9d984248c2c" />
+<img width="906" height="697" alt="image" src="https://github.com/user-attachments/assets/e1fe6694-6cf4-4333-94d2-98759c35df27" />
