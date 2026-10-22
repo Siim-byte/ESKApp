@@ -1,5 +1,6 @@
-import SkateparksController from "../controllers/SkateparksController.ts"
-import {Express} from "express";
+import SkateparksController from "../controllers/SkateparksController.ts";
+import UsersController from "../controllers/UsersController.ts";
+import type {Express} from "express";
 
 export default (app: Express): void => {
     app.route("/Skateparks")

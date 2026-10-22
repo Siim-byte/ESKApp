@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 //bcrypt
 import bcrypt from "bcrypt";
 
@@ -14,8 +14,11 @@ const Utilities = {
         givenPassword: string, givenHash: string): Promise<boolean>
         {
             return await bcrypt.compare(givenPassword, givenHash)
-        }
-    
+        },
+    async getCurrentDateTime()
+    {
+        
+    }
 }
 
 export default Utilities

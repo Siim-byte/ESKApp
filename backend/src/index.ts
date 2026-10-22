@@ -1,13 +1,12 @@
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
-import { sync } from "../../backend/db.js";
-import appRoutes from "../routes/appRoutes.ts"
-import { log } from "console";
+import { sync } from "../../backend/src/db.js";
 
-dotenv.config();
+import appRoutes from "../../backend/src/routes/appRoutes.ts"
 
-const post = process.env.env.PORT
+
+const port = process.env.PORT || 8080
 const host = "localhost";
 
 const app = express();
@@ -21,7 +20,7 @@ app.listen(port, async() => {
     if (process.env.SYNC === "true") {
         await sync();
     }
-    console.log(`API töötab aadressil http://${host}:${PORT}`);
+    console.log(`API töötab aadressil http://${host}:${port}`);
     
 })
 

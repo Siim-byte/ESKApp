@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { db } from "../db.js";
-import Utilities from "./Utilities.ts";
+import { db } from "../db.ts";
+import Utilities from "../Utilities.ts";
 import { v7 as uuidv7 } from "uuid";
 
 const SkateparksController = {
@@ -29,13 +29,11 @@ const SkateparksController = {
         aadress: req.body.aadress,
         latitude: req.body.latitude,
         longitude: req.body.longitude,
-        admin_id: req.body.admin_id,
-        created_at: Utilities.getCurrentDateTime(),
-        updated_at: Utilities.getCurrentDateTime(),
+        admin_id: req.body.admin_id
     }
     const createdSkatepark = await db.skateparks.create(newSkatepark);
     return res
-    .location(`${Utilities.getBaseUrl(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
+    .location(`${Utilities.getBaseURL(req)}/skateparks/${createdSkatepark.SkateparkID}`).sendStatus(201);
 },
     async getAll(req: Request, res: Response) {
         const skateparks = await db.skateparks.findAll();
@@ -91,7 +89,7 @@ const SkateparksController = {
         
         await skateparkToBeModified.save()
 
-        return res.location(`${Utilities.getBaseUrl(req)}/skateparks/${skateparkToBeModified.id}`)
+        return res.location(`${Utilities.getBaseURL(req)}/skateparks/${skateparkToBeModified.id}`)
         .status(201)
         .send(skateparkToBeModified)
     }
