@@ -43,7 +43,7 @@ const SkateparksController = {
         .send(
             skateparks.map
             (
-                ({Id, name}) => {return {Id, name}}
+                ({ Id, name }: { Id: string; name: string }) => ({ Id, name })
             )
         )
         
