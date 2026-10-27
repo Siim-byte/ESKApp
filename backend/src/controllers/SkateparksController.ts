@@ -37,7 +37,38 @@ const SkateparksController = {
     return res
     .location(`${Utilities.getBaseURL(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
 },
-    async getAll(req: express.Request, res: express.Response) {
+    async create(req: Request, res: Response){
+        if (
+            !req.body.name || 
+            !req.body.description ||
+            !req.body.city ||
+            !req.body.aadress ||
+            !req.body.latitude ||
+            !req.body.longitude ||
+            !req.body.admin_id
+        ) {
+            return res.status(400).send(
+                {
+                    error: "Missing parameters, please review data"
+                }
+            );
+        
+        }
+        const newSkatepark = {
+            id: uuidv7(),
+            name: req.body.name,
+            description: req.body.description,
+            city: req.body.city,
+            aadress: req.body.aadress,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
+            admin_id: req.body.admin_id
+        }
+        const createdSkatepark = await db.skateparks.create(newSkatepark);
+        return res
+        .location(`${Utilities.getBaseURL(req)}/skateparks/${createdSkatepark.SkateparkID}`).sendStatus(201);
+    },
+    async getAll(req: Request, res: Response) {
         const skateparks = await db.skateparks.findAll();
         console.log("GetAll: "+skateparks)
         return res
@@ -107,6 +138,35 @@ const SkateparksController = {
         return null;
     }
     return skatepark
+    },
+
+    async addToFavorites(req: Request, res: Response) {
+        if (!(req as any).user || !(req as any).user.id) {
+            return res.status(401).send({ error: "User is not authorized" });
+        }
+
+        const skateparkID = req.params.Id;
+        if (!skateparkID) {
+            return res.status(400).send({ error: "Invalid or missing skatepark ID" });
+        }
+
+        const skatepark = await db.skateparks.findByPk(skateparkID);
+        if (!skatepark) {
+            return res.status(404).send({ error: `Skatepark with ID ${skateparkID} does not exist` });
+        }
+
+        const userId = (req as any).user.id;
+        const favorite = await db.userFavorites.create({
+            id: uuidv7(),
+            user_id: userId,
+            skatepark_id: skateparkID
+        });
+
+        return res.status(201).send({
+            message: "Skatepark added to favorites",
+            favorite,
+            skatepark
+        });
     }
 }
 
