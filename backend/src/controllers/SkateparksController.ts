@@ -95,6 +95,26 @@ const SkateparksController = {
         .status(201)
         .send(skateparkToBeModified)
     },
+
+        async deleteByID(req: express.Request, res: express.Response) {
+        let skateparkID: string = req.params.id as string
+        if (!skateparkID) {
+            return res.status(400).send({ error: "No ID is given" });
+        }
+
+
+        const skatepark = await db.skateparks.findByPk(skateparkID);
+        if (!skatepark) {
+            return res.status(404).send({ error: "Skatepark is not found" });
+        }
+
+        await (skatepark as any).destroy();
+        return res.status(200).send({
+            message: "Skatepark deleted successfully",
+            deletedSkatepark: skatepark
+        });
+    },
+
     async getSkatepark(req: express.Request, res: express.Response){
     let skateparkID: string = req.params.id as string
     console.log(skateparkID)
