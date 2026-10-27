@@ -36,39 +36,8 @@ const SkateparksController = {
     const createdSkatepark = await db.skateparks.create(newSkatepark);
     return res
     .location(`${Utilities.getBaseURL(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
-},
-    async create(req: Request, res: Response){
-        if (
-            !req.body.name || 
-            !req.body.description ||
-            !req.body.city ||
-            !req.body.aadress ||
-            !req.body.latitude ||
-            !req.body.longitude ||
-            !req.body.admin_id
-        ) {
-            return res.status(400).send(
-                {
-                    error: "Missing parameters, please review data"
-                }
-            );
-        
-        }
-        const newSkatepark = {
-            id: uuidv7(),
-            name: req.body.name,
-            description: req.body.description,
-            city: req.body.city,
-            aadress: req.body.aadress,
-            latitude: req.body.latitude,
-            longitude: req.body.longitude,
-            admin_id: req.body.admin_id
-        }
-        const createdSkatepark = await db.skateparks.create(newSkatepark);
-        return res
-        .location(`${Utilities.getBaseURL(req)}/skateparks/${createdSkatepark.SkateparkID}`).sendStatus(201);
     },
-    async getAll(req: Request, res: Response) {
+    async getAll(req: express.Request, res: express.Response) {
         const skateparks = await db.skateparks.findAll();
         console.log("GetAll: "+skateparks)
         return res
@@ -140,7 +109,7 @@ const SkateparksController = {
     return skatepark
     },
 
-    async addToFavorites(req: Request, res: Response) {
+    async addToFavorites(req: express.Request, res: express.Response) {
         if (!(req as any).user || !(req as any).user.id) {
             return res.status(401).send({ error: "User is not authorized" });
         }
