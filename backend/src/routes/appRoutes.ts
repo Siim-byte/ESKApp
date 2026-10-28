@@ -3,7 +3,7 @@ import SkateparksController from "../controllers/SkateparksController.ts";
 import UsersController from "../controllers/UsersController.ts";
 
 export default (app: express.Application): void => {
-    app.route("/Skateparks")
+    app.route("/skateparks")
     .get(SkateparksController.getAll)
     .post(SkateparksController.create)
 
@@ -15,5 +15,7 @@ export default (app: express.Application): void => {
     app.route("/users")
     .get(UsersController.getAll)
     .post(UsersController.create)
-    
+
+    app.route("/users/:id")
+    .get(UsersController.getById)
 }
