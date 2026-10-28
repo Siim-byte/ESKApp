@@ -95,6 +95,27 @@ const UserFavoritesController = {
             });
         }
     },
+
+    async remove(req: Request, res: Response) {
+        try {
+            const favorite = await userFavorites.findByPk(req.params.id);
+
+            if (!favorite) {
+                return res.status(404).send({
+                    error: "Favorite not found"
+                });
+            }
+
+            await favorite.destroy();
+
+            return res.sendStatus(204);
+        } catch (error) {
+            return res.status(500).send({
+                error: "Internal server error while removing favorite",
+                details: error instanceof Error ? error.message : error
+            });
+        }
+    }
 };
 
 export default UserFavoritesController;
