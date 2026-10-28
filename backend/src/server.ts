@@ -292,7 +292,43 @@ app.delete('/comments/:id', (req: Request, res: Response) => {
     });
 });
 
-
+app.put('/comments/:id', async (req: Request, res: Response) => {
+    try {
+        const rawId = req.params.id;
+        const commentId = Array.isArray(rawId) ? rawId[0] : rawId;
+        if (!commentId) {
+            return res.status(400).send({
+                error: "Comment ID was not given or is invalid"
+            });
+        }
+        if (!req.body || !req.body.content) {
+            return res.status(400).send({
+                error: "Missing parameters, please review data"
+            });
+        }
+        const commentToBeModified = await db.comments.findByPk(commentId);
+        if (!commentToBeModified) {
+            return res.status(404).send({
+                error: "Comment not found"
+            });
+        }
+        commentToBeModified.content = req.body.content;
+        if (req.body.is_hidden !== undefined) {
+            commentToBeModified.is_hidden = req.body.is_hidden;
+        }
+        await commentToBeModified.save();
+        return res.status(200).send({
+            message: "Comment successfully modified",
+            comment: commentToBeModified
+        });
+    } catch (error: any) {
+        console.error("Error updating comment:", error);
+        return res.status(500).send({
+            error: "Internal server error",
+            details: error?.message || String(error)
+        });
+    }
+});
 
 
 

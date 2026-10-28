@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import * as express from "express"
 import { db } from "../db.ts";
 import { connect, sync } from "../db.ts";
 import Utilities from "../Utilities.ts";
@@ -95,8 +96,47 @@ async getCommentById(req: Request, res: Response) {
                 details: error instanceof Error ? error.message : error
             });
         }
+    },
+    async modifyByID(req: express.Request, res: express.Response) {
+        const commentToBeModified = await UserCommentsController.getComment(req, res);
+        if (!commentToBeModified) {
+            return;
+        }
+
+        if (!req.body.content) {
+            return res.status(400).send({
+                error: "Missing parameters, please review data"
+            });
+        }
+
+        commentToBeModified.content = req.body.content;
+        
+        if (req.body.is_hidden !== undefined) {
+            commentToBeModified.is_hidden = req.body.is_hidden;
+        }
+
+        await commentToBeModified.save();
+
+        return res.location(`${Utilities.getBaseURL(req)}/comments/${commentToBeModified.commentsID}`)
+            .status(200)
+            .send(commentToBeModified);
+    },
+     async getComment(req: express.Request, res: express.Response) {
+        let commentID: string = req.params.id as string;
+        console.log("Fetching comment ID:", commentID);
+        
+        const comment = await db.comments.findByPk(commentID);
+        if (!comment) {
+            console.log("Comment not found");
+            res.status(404).send({
+                error: `Comment with this ID is not found. ${commentID}`
+            });
+            return null;
+        }
+        return comment;
     }
 };
+
 
 
 export default UserCommentsController;

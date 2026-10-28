@@ -32,5 +32,6 @@ export default (app: express.Application): void => {
     app.route("/comments/:id")
     .get(UserCommentsController.getCommentById)
     .delete(UserCommentsController.deleteByID)
+    .put(UserCommentsController.modifyByID)
 
 }
