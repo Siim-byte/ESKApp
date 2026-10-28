@@ -1,4 +1,6 @@
 import express, { type Request, type Response, type NextFunction } from "express"
+import { db } from "./db.ts";
+import type { UUID } from "node:crypto";
 
 
 const app = express()
@@ -240,7 +242,6 @@ app.post("/comments", (req: Request, res: Response) => {
     const userID = req.body?.userID;
     const skateparkID = req.body?.skateparkID;
     const content = req.body?.content;
-
     if (!userID) {
         res.status(400).send({ error: "Missing userID parameter" });
         return;
@@ -253,16 +254,42 @@ app.post("/comments", (req: Request, res: Response) => {
         res.status(400).send({ error: "Missing content parameter" });
         return;
     }
-
     const newComment = {
         commentID: nextCommentsId++,
         userID: userID,
         skateparkID: skateparkID,
         content: content
     };
-
     comments.push(newComment);
     res.status(201).send(newComment);
+});
+
+export interface Comment {
+    commentID: UUID; 
+    author?: string;
+    createdAt?: Date;
+}
+
+app.delete('/comments/:id', (req: Request, res: Response) => {
+    const commentId = req.params.id;
+
+    if (!commentId) {
+        return res.status(400).send({
+            error: "Comment ID was not given or is invalid"
+        });
+    }
+    const commentIndex = comments.findIndex(
+        comment => String(comment.commentsID) === String(commentId)
+    );
+    if (commentIndex === -1) {
+        return res.status(404).send({
+            error: "Comment not found"
+        });
+    }
+    comments.splice(commentIndex, 1);
+    res.send({
+        message: "Comment successfully removed"
+    });
 });
 
 
