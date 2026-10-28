@@ -3,6 +3,8 @@ import { db } from "../db.ts";
 import Utilities from "../Utilities.ts";
 import { v7 as uuidv7 } from "uuid";
 
+const userFavorites = (db as any).userFavorites;
+
 const UserFavoritesController = {
     async create(req: Request, res: Response) {
         try {
@@ -12,7 +14,7 @@ const UserFavoritesController = {
                 });
             }
 
-            const existingFavorite = await db.userFavorites.findOne({
+            const existingFavorite = await userFavorites.findOne({
                 where: {
                     UserID: req.body.UserID,
                     SkateparkID: req.body.SkateparkID
@@ -31,7 +33,7 @@ const UserFavoritesController = {
                 SkateparkID: req.body.SkateparkID
             };
 
-            const addedUserFavorite = await db.userFavorites.create(newUserFavorites);
+            const addedUserFavorite = await userFavorites.create(newUserFavorites);
             
             return res.location(`${Utilities.getBaseURL(req)}/usercollections/${addedUserFavorite.id}`).sendStatus(201);
         } catch (error) {
@@ -44,7 +46,7 @@ const UserFavoritesController = {
 
     async getFavoriteById(req: Request, res: Response) {
         try {
-            const favorite = await db.userFavorites.findByPk(req.params.id);
+            const favorite = await userFavorites.findByPk(req.params.id);
 
             if (!favorite) {
                 return res.status(404).send({
