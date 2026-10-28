@@ -39,5 +39,28 @@ const UsersController = {
             ({id, display_name, email }) => {return {id, display_name, email}}
         ))
         
+    },
+    async getById(req: express.Request, res: express.Response) {
+        const user = await UsersController.getUser(req,res)
+        if (!user) {
+            return
+        }
+        return res.status(200).send(user)
+    },
+    async getUser(req: express.Request, res: express.Response) {
+        let userID: string = req.params.id as string
+        const user = await db.users.findByPk(userID);
+        if(!user) {
+            res.status(404).send(
+                {
+                    error: `user with this id does not exist: ${userID}`
+                }
+            )
+            return null
+        }
+        return user
     }
+
 }
+
+export default UsersController
