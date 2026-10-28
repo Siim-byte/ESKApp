@@ -2,6 +2,7 @@ import type express from "express"
 import SkateparksController from "../controllers/SkateparksController.ts";
 import UsersController from "../controllers/UsersController.ts";
 import { User } from "../models/User.ts";
+import UserCommentsController from "../controllers/UserCommentsController.ts";
 
 export default (app: express.Application): void => {
     app.route("/skateparks")
@@ -21,4 +22,10 @@ export default (app: express.Application): void => {
     .get(UsersController.getById)
     .get(UsersController.modifyById)
     .delete(UsersController.deleteById)
+
+
+    app.route("/comments")
+    .get(UserCommentsController.GetAll)
+    .post
+
 }

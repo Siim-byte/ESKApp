@@ -204,6 +204,32 @@ app.post("/favorites", (req: Request, res: Response) => {
     res.status(201).send(newFavorite)
 })
 
+let nextCommentsId = 1;
+const comments: { commentsID: number; userID: string; skateparkID: number; content: string }[] = [
+    { commentsID: nextCommentsId++, userID: "1", skateparkID: 1, content: "hea skeit" },
+    { commentsID: nextCommentsId++, userID: "2", skateparkID: 2, content: "norm ramp" },
+    { commentsID: nextCommentsId++, userID: "1", skateparkID: 3, content: "lemmik koht rummu karj22ris" }
+];
+
+app.get("/comments", (req: Request, res: Response) => {
+    const result = comments.map((comment) => ({
+        commentsID: comment.commentsID,
+        userID: comment.userID,
+        skateparkID: comment.skateparkID,
+        content: comment.content
+    }));
+    
+    res.send(result);
+});
+
+
+
+
+
+
+
+
+////////////
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
 })
