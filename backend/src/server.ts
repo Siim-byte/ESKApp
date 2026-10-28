@@ -201,8 +201,8 @@ app.post("/favorites", (req: Request, res: Response) => {
     }
 
     favorites.push(newFavorite)
-    res.status(201).send(newFavorite)
-})
+    res.status(201).send(newFavorite) 
+7})
 
 let nextCommentsId = 1;
 const comments: { commentsID: number; userID: string; skateparkID: number; content: string }[] = [
@@ -222,7 +222,20 @@ app.get("/comments", (req: Request, res: Response) => {
     res.send(result);
 });
 
+app.get("/comments/:id", (req: Request, res: Response) => {
+    if (!req.params.id) {
+        return res.status(400).send({ error: "commentsID missing" });
+    }
 
+    const commentId = typeof req.params.id === "string" ? parseInt(req.params.id) : parseInt(req.params.id[0]!);
+    const result = comments.find(comment => comment.commentsID === commentId);
+
+    if (!result) {
+        return res.status(404).send({ error: "Comment not found" });
+    }
+
+    res.send(result);
+});
 
 
 

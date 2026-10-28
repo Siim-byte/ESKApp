@@ -2,8 +2,9 @@ import { Sequelize, DataTypes } from 'sequelize';
 
 //modelite pathid
 import SkateparkModel from "../src/models/skatepark.ts"
-import UserModel from "./models/User.ts";
+import  UserModel from "./models/User.ts";
 import UserFavoriteModel from './models/favorite.ts';
+import CommentModel from "./models/comment.ts";
 
 const sequelize = new Sequelize(
     process.env.DB_NAME!,
@@ -26,13 +27,15 @@ const connect = async (): Promise<void> => {
 };
 const _Skatepark = SkateparkModel(sequelize )
 const _User = UserModel(sequelize )
+const _Comment = CommentModel(sequelize)
 //andmebaasi instants ja seostused
 
 const db = {
     Sequelize, 
     sequelize,
     skateparks: _Skatepark,
-    users: _User
+    users: _User,
+    comments: _Comment
 };
 //db.userFavorites = require("./models/favorites.ts")(sequelize, DataTypes, db.skateparks, db.users)
 //db.skateparks.BelongsToMany(db.users,{through: db.userFavorites, as: "userid"})
