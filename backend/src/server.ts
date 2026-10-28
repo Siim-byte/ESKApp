@@ -76,6 +76,27 @@ const newRating = {
     .location(`https:localhost${PORT}/ratings/` + (newRating.id))
     .send(newRating)
 })
+app.delete('/ratings/:id', (req: Request, res: Response) => {
+    if (!req.params.id || isNaN(parseInt(req.params.id))) {
+        return res.status(400).send({
+            error: "Rating ID was not given or is invalid"
+        })
+    }
+
+    const ratingId = parseInt(req.params.id)
+    const ratingIndex = ratings.findIndex(rating => rating.id === ratingId)
+
+    if (ratingIndex === -1) {
+        return res.status(404).send({
+            error: "Rating not found"
+        })
+    }
+
+    ratings.splice(ratingIndex, 1)
+    res.send({
+        message: "Rating successfully removed"
+    })
+})
 
 app.get("/details", (req: Request, res: Response) => {
     const result = details.map((detail) => ({ id: detail.id, name: detail.name }))   
