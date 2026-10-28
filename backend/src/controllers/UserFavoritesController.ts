@@ -61,6 +61,18 @@ const UserFavoritesController = {
                 details: error instanceof Error ? error.message : error
             });
         }
+    },
+
+    async getFavorites(req: Request, res: Response) {
+        try {
+            const favorites = await userFavorites.findAll();
+            return res.status(200).send(favorites);
+        } catch (error) {
+            return res.status(500).send({
+                error: "Internal server error while fetching favorites list",
+                details: error instanceof Error ? error.message : error
+            });
+        }
     }
 };
 
