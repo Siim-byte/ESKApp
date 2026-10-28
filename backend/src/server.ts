@@ -236,7 +236,34 @@ app.get("/comments/:id", (req: Request, res: Response) => {
 
     res.send(result);
 });
+app.post("/comments", (req: Request, res: Response) => {
+    const userID = req.body?.userID;
+    const skateparkID = req.body?.skateparkID;
+    const content = req.body?.content;
 
+    if (!userID) {
+        res.status(400).send({ error: "Missing userID parameter" });
+        return;
+    }
+    if (!skateparkID) {
+        res.status(400).send({ error: "Missing skateparkID parameter" });
+        return;
+    }
+    if (!content) {
+        res.status(400).send({ error: "Missing content parameter" });
+        return;
+    }
+
+    const newComment = {
+        commentID: nextCommentsId++,
+        userID: userID,
+        skateparkID: skateparkID,
+        content: content
+    };
+
+    comments.push(newComment);
+    res.status(201).send(newComment);
+});
 
 
 

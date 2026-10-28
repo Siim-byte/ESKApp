@@ -26,6 +26,7 @@ export default (app: express.Application): void => {
 
     app.route("/comments")
     .get(UserCommentsController.GetAll)
+    .post(UserCommentsController.create)
     
     app.route("/comments/:id")
     .get(UserCommentsController.getCommentById)

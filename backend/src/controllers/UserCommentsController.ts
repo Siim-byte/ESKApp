@@ -4,6 +4,7 @@ import { connect, sync } from "../db.ts";
 import Utilities from "../Utilities.ts";
 import { v7 as uuidv7 } from "uuid";
 import {error} from "node:console";
+import { Comment } from "../models/comment.ts";
 
 const comments = db.comments;
 
@@ -41,8 +42,31 @@ async getCommentById(req: Request, res: Response) {
                 details: error instanceof Error ? error.message : error
             });
         }
+    },
+    async create(req: Request, res: Response) {
+        try {
+            const newComment = {
+                commentsID: uuidv7(),
+                UserID: req.body.UserID,
+                SkateparkID: req.body.SkateparkID,
+                Content: req.body.Content,
+                Is_hidden: req.body.Is_hidden ?? false
+            };
+
+            const createdComment = await db.comments.create(newComment);
+            
+            return res
+                .location(`${Utilities.getBaseURL(req)}/comments/${createdComment.commentsID}`)
+                .status(201)
+                .send(createdComment);
+        } catch (error) {
+            return res.status(500).send({
+                error: "Internal server error while creating comment",
+                details: error instanceof Error ? error.message : error
+            });
+        }
     }
-    
+};
 }
 
 export default UserCommentsController;
