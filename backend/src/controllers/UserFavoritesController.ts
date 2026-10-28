@@ -73,7 +73,28 @@ const UserFavoritesController = {
                 details: error instanceof Error ? error.message : error
             });
         }
-    }
+    },
+
+    async update(req: Request, res: Response) {
+        try {
+            const favorite = await userFavorites.findByPk(req.params.id);
+
+            if (!favorite) {
+                return res.status(404).send({
+                    error: "Favorite not found"
+                });
+            }
+
+            await favorite.update(req.body);
+
+            return res.status(200).send(favorite);
+        } catch (error) {
+            return res.status(500).send({
+                error: "Internal server error while updating favorite",
+                details: error instanceof Error ? error.message : error
+            });
+        }
+    },
 };
 
 export default UserFavoritesController;
