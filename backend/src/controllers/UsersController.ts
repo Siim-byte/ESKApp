@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
+import * as express from "express";
 import { db } from "../db.ts";
-import Utilities from "./Utilities.ts";
+import Utilities from "../Utilities.ts";
 import { v7 as uuidv7 } from "uuid";
-import { error, time } from "node:console";
-import { DataTypes } from "sequelize";
+import type {User} from "../models/User.ts"
+
 
 const UsersController = {
-    async create(req: Request, res: Response) {
+    async create(req: express.Request, res: express.Response) {
         if (!req.body.display_name || 
         !req.body.email ||
         !req.body.password_hash ||
@@ -19,21 +19,25 @@ const UsersController = {
             return res.status(406)
             .send({error:"Passwords do not match, please check your info."})            
         }
-        const newUser = {
+        const passwordHash = await Utilities.gimmePassword(req.body.Password)
+
+        const result = await db.users.create({
             id: uuidv7(),
             display_name: req.body.display_name,
             email: req.body.email,
             role: req.body.role,
-            created_at: Date.now,
-            updated_at: "",
-            UserStatus: "unverified",
-            password_hash: ""
-        }
-        newUser.password_hash = await Utilities.gimmePassword(req.body.password_hash)
-
-        const result = await db.users.create(newUser);
+            password_hash: passwordHash
+        })
 
         return res.location(`${Utilities.getBaseURL(req)}/users/${result.id}`).sendStatus(201);
 
+    },
+    async getAll(req: express.Request, res: express.Response) {
+        const users = await db.users.findAll();
+        console.log("getAll"+users)
+        return res.status(200).send(users.map(
+            ({id, display_name, email }) => {return {id, display_name, email}}
+        ))
+        
     }
 }
