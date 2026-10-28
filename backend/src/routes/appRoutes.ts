@@ -4,6 +4,7 @@ import UsersController from "../controllers/UsersController.ts";
 import { User } from "../models/User.ts";
 import UserCommentsController from "../controllers/UserCommentsController.ts";
 
+
 export default (app: express.Application): void => {
     app.route("/skateparks")
     .get(SkateparksController.getAll)
@@ -30,5 +31,6 @@ export default (app: express.Application): void => {
     
     app.route("/comments/:id")
     .get(UserCommentsController.getCommentById)
+    .delete(UserCommentsController.deleteByID)
 
 }

@@ -65,8 +65,38 @@ async getCommentById(req: Request, res: Response) {
                 details: error instanceof Error ? error.message : error
             });
         }
+    },
+    async deleteByID(req: Request, res: Response) {
+        try {
+            const commentId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+
+            if (!commentId) {
+                return res.status(400).send({
+                    error: "commentsID missing or invalid"
+                });
+            }
+
+            const comment = await db.comments.findByPk(commentId);
+
+            if (!comment) {
+                return res.status(404).send({
+                    error: "Comment not found"
+                });
+            }
+
+            await comment.destroy();
+
+            return res.status(200).send({
+                message: "Comment successfully removed"
+            });
+        } catch (error) {
+            return res.status(500).send({
+                error: "Internal server error while deleting comment",
+                details: error instanceof Error ? error.message : error
+            });
+        }
     }
 };
-}
+
 
 export default UserCommentsController;
