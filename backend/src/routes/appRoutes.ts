@@ -1,6 +1,7 @@
 import type express from "express"
 import SkateparksController from "../controllers/SkateparksController.ts";
 import UsersController from "../controllers/UsersController.ts";
+import { User } from "../models/User.ts";
 
 export default (app: express.Application): void => {
     app.route("/skateparks")
@@ -19,4 +20,5 @@ export default (app: express.Application): void => {
     app.route("/users/:id")
     .get(UsersController.getById)
     .get(UsersController.modifyById)
+    .delete(UsersController.deleteById)
 }
