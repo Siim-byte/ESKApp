@@ -2,7 +2,7 @@ import * as express from "express";
 import { db } from "../db.ts";
 import Utilities from "../Utilities.ts";
 import { v7 as uuidv7 } from "uuid";
-import type {User} from "../models/User.ts"
+import {User} from "../models/User.ts"
 
 
 const UsersController = {
@@ -47,6 +47,58 @@ const UsersController = {
         }
         return res.status(200).send(user)
     },
+    async modifyById(req: express.Request, res: express.Response) {
+        if(!req.params.id) {
+            return res.status(400).send({"error":"No id supplied"})
+        }
+        console.log("+++++++ id is"+req.params.id);
+        
+        const userToBeModified = await UsersController.getUser(req, res) as User
+        console.log("++++++ user is"+userToBeModified);
+        if (!req.body) {
+            return res.status(400).send({"error":"No body was supplied, nothing was changed"})
+        }
+        console.log("++++++ body: "+req.body);
+        
+        const modifiedUser = new User
+
+        modifiedUser.email = userToBeModified.email
+        modifiedUser.display_name = userToBeModified.display_name
+        modifiedUser.password_hash = userToBeModified.password_hash
+        modifiedUser.role = userToBeModified.role
+        modifiedUser.createdAt = userToBeModified.createdAt
+        modifiedUser.updatedAt = userToBeModified.updatedAt
+        modifiedUser.is_blocked = userToBeModified.is_blocked
+
+        if (req.body.display_name) {
+            modifiedUser.display_name = req.body.display_name
+        }
+        if (req.body.password_hash) {
+            if (req.body.password_hash != req.body.PasswordConfirmation)
+            {
+                return res.status(406)
+                .send({error:"Passwords do not match, please check your info."})
+            }
+        }
+        if (req.body.role) {
+            modifiedUser.role = req.body.role
+        }
+        if (req.body.email) {
+            console.log("+++++ found email is")
+            
+            modifiedUser.email = req.body.email
+        }
+        modifiedUser.updatedAt = new Date()
+        console.log("+++++ modifieduser is: "+modifiedUser);
+        
+        await db.users.update(modifiedUser, {
+            where: {
+                id: req.params.id
+            }
+        })
+        return res.location(`${Utilities.getBaseURL(req)}/users/${modifiedUser}`).status(201).send(modifiedUser)
+    },
+
     async getUser(req: express.Request, res: express.Response) {
         let userID: string = req.params.id as string
         const user = await db.users.findByPk(userID);
@@ -59,8 +111,7 @@ const UsersController = {
             return null
         }
         return user
-    }
-
+    },
 }
 
 export default UsersController
