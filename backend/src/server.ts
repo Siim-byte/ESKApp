@@ -6,12 +6,12 @@ app.use(express.json())
 const PORT = process.env.PORT || 3000
 
 let nextRatingId = 1;
-const ratings = [
-    { id: nextRatingId++, rate: "1" },
-    { id: nextRatingId++, rate: "2" },
-    { id: nextRatingId++, rate: "3" },
-    { id: nextRatingId++, rate: "4" },
-    { id: nextRatingId++, rate: "5" }
+const ratings: { id: number; skateparkId: number; rate: string }[] = [
+    { id: nextRatingId++, skateparkId: 1, rate: "1" },
+    { id: nextRatingId++, skateparkId: 1, rate: "2" },
+    { id: nextRatingId++, skateparkId: 2, rate: "3" },
+    { id: nextRatingId++, skateparkId: 2, rate: "4" },
+    { id: nextRatingId++, skateparkId: 3, rate: "5" }
 ]
 let nextSkateparkId = 1
 const skateparks: { id: number; name: string; city: string }[] = [
@@ -58,11 +58,16 @@ app.get("/ratings/:id", (req: Request, res: Response) => {
 })
 
 app.post('/ratings', (req: Request, res: Response) => {
-    if (!req.body?.rate) {
-        return res.status(400).send({ error: 'Required parameter: rate' })
+    if (!req.body?.rate || !req.body?.skateparkId) {
+        return res.status(400).send({ error: 'Required parameter: rate, skateparkID' })
+    }
+    const parkExists = skateparks.some(p => p.id === parseInt(req.body.skateparkId))
+    if (!parkExists) {
+        return res.status(404).send({error: 'Skatepark not found'})
     }
 const newRating = {
         id: nextRatingId++,
+        skateparkId: parseInt(req.body.skateparkId),
         rate: req.body.rate
     }
     
@@ -70,6 +75,27 @@ const newRating = {
     res.status(201)
     .location(`https:localhost${PORT}/ratings/` + (newRating.id))
     .send(newRating)
+})
+app.delete('/ratings/:id', (req: Request, res: Response) => {
+    if (!req.params.id || isNaN(parseInt(req.params.id))) {
+        return res.status(400).send({
+            error: "Rating ID was not given or is invalid"
+        })
+    }
+
+    const ratingId = parseInt(req.params.id)
+    const ratingIndex = ratings.findIndex(rating => rating.id === ratingId)
+
+    if (ratingIndex === -1) {
+        return res.status(404).send({
+            error: "Rating not found"
+        })
+    }
+
+    ratings.splice(ratingIndex, 1)
+    res.send({
+        message: "Rating successfully removed"
+    })
 })
 
 app.get("/details", (req: Request, res: Response) => {
@@ -121,7 +147,15 @@ app.get("/favorites/:id", (req: Request, res: Response) => {
     res.send(result)
 })
 app.get("/skateparks", (req: Request, res: Response) => {
-    const result = skateparks.map((skatepark) => ({ id: skatepark.id, name: skatepark.name, city: skatepark.city }))
+    const result = skateparks.map((skatepark) => {
+        const parkRatings = ratings.filter(r => r.skateparkId === skatepark.id)
+        return {
+         id: skatepark.id,
+          name: skatepark.name,
+           city: skatepark.city,
+           ratings: parkRatings
+        }
+    })
     res.send(result)
 })
 app.get("/skateparks/:id", (req: Request, res: Response) => {
