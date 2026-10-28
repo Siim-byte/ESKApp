@@ -1,7 +1,9 @@
 import { Sequelize, DataTypes } from 'sequelize';
+
+//modelite pathid
 import SkateparkModel from "../src/models/skatepark.ts"
-import UserModel from "../src/models/Users.ts";
-import UserFavoriteModel from '../src/models/favorites.ts';
+import UserModel from "./models/User.ts";
+import UserFavoriteModel from './models/favorite.ts';
 
 const sequelize = new Sequelize(
     process.env.DB_NAME!,
@@ -22,21 +24,23 @@ const connect = async (): Promise<void> => {
         console.error("db connection error", error);
     }
 };
+const _Skatepark = SkateparkModel(sequelize )
+const _User = UserModel(sequelize )
+//andmebaasi instants ja seostused
 
 const db = {
     Sequelize, 
     sequelize,
-    skateparks: require("../backend/models/skatepark.ts")(sequelize, DataTypes),
-    users: require("../backend/models/Users.ts")(sequelize, DataTypes),
-    userFavorites: require("./models/favorites.ts")(sequelize, DataTypes)
+    skateparks: _Skatepark,
+    users: _User
 };
-db.userFavorites = require("./models/favorites.ts")(sequelize, DataTypes, db.skateparks, db.users)
-db.skateparks.BelongsToMany(db.users,{through: db.userFavorites, as: "userid"})
-db.users.belongsTo(db.skateparks, {through: db.userFavorites, as: "skateparkid"})
+//db.userFavorites = require("./models/favorites.ts")(sequelize, DataTypes, db.skateparks, db.users)
+//db.skateparks.BelongsToMany(db.users,{through: db.userFavorites, as: "userid"})
+//db.users.belongsTo(db.skateparks, {through: db.userFavorites, as: "skateparkid"})
 
 
-db.users.HasMany(db.userFavorites, {foreignKey: "userid" as "skateparkid"})
-db.userFavorites.BelongsTo(db.users, {foreignKey: "userid" as "skateparkid"})
+//db.users.HasMany(db.userFavorites, {foreignKey: "userid" as "skateparkid"})
+//db.userFavorites.BelongsTo(db.users, {foreignKey: "userid" as "skateparkid"})
 const sync = async(): Promise<void> => {
     await sequelize.sync({alter:true})
     console.log("DB is synced")

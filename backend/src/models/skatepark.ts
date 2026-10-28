@@ -1,54 +1,61 @@
-import { Sequelize, DataTypes } from "sequelize";
+import type {UUID} from "node:crypto"
+import { DataTypes, Model, UUIDV4 } from "sequelize";
+import type { InferAttributes, InferCreationAttributes, CreationOptional, Sequelize } from "sequelize";
+import type {Json} from "sequelize/lib/utils";
 
-export default function SkateparkModel(
-  sequelize: Sequelize,
-  dataTypes: typeof DataTypes
-) {
-  const Skatepark = sequelize.define(
-    "Skatepark",
+export class Skatepark extends Model<InferAttributes<Skatepark>, InferCreationAttributes<Skatepark>> {
+  //
+  declare name: string;
+  declare city: string;
+  declare description: string;
+  //
+  declare id: CreationOptional<string>;
+  declare address: CreationOptional<string>;
+  declare latitude: CreationOptional<string>;
+  declare longitude: CreationOptional<string>;
+  //
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
+
+}
+export default function initSkateparkModel(sequelize: Sequelize)
+{
+  Skatepark.init(
     {
       id: {
-        type: dataTypes.UUID,
-        defaultValue: dataTypes.UUIDV4,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
       name: {
-        type: dataTypes.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       city: {
-        type: dataTypes.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       address: {
-        type: dataTypes.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       latitude: {
-        type: dataTypes.STRING,
+        type: DataTypes.STRING,
       },
       longitude: {
-        type: dataTypes.STRING,
+        type: DataTypes.STRING,
       },
       description: {
-        type: dataTypes.TEXT,
+        type: DataTypes.TEXT,
       },
-      admin_id: {
-        type: dataTypes.INTEGER, // Või dataTypes.UUID olenevalt admin kasutaja ID tüübist
-        allowNull: false,
-      },
-      created_at: {
-        type: dataTypes.DATE,
-      },
-      updated_at: {
-        type: dataTypes.DATE,
-      },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
-      underscored: true, // Tagab snake_case väljanimed (created_at, updated_at)
+      sequelize,
+      modelName: "Game"
     }
-  );
-
-  console.log(Skatepark === sequelize.models.Skatepark);
+  )
   return Skatepark;
 }
+
