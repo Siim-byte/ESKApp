@@ -3,6 +3,7 @@ import { db } from "../db.ts";
 import Utilities from "../Utilities.ts";
 import { v7 as uuidv7 } from "uuid";
 import {User} from "../models/User.ts"
+import SkateparksController from "./SkateparksController.ts";
 
 
 const UsersController = {
@@ -111,6 +112,14 @@ const UsersController = {
             return null
         }
         return user
+    },
+    async deleteById(req: express.Request, res: express.Response) {
+        const userToBeDeleted = await UsersController.getUser(req, res)
+        if (!userToBeDeleted) {
+            return
+        }
+        await userToBeDeleted.destroy();
+        return res.status(204).send({error :"No Content"})
     },
 }
 
