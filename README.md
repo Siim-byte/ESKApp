@@ -22,3 +22,17 @@ Link to project https://github.com/users/Siim-byte/projects/4
 
 <img width="903" height="700" alt="image" src="https://github.com/users/Siim-byte/projects/4/views/1?filterQuery=" />
 
+## Keskkonnamuutujate seadistamine (.env)
+
+Enne projekti käivitamist pead looma `backend` kausta sisse `.env` faili. 
+
+1. Tee failist `.env.example` koopia ja nimeta see ümber **`.env`** failiks.
+2. Täida vajalikud andmebaasi ja serveri seadistused:
+
+```env
+DB_NAME="sinu_andmebaasi_nimi"
+DB_USERNAME="sinu_andmebaasi_kasutajanimi"
+DB_PASSWORD="sinu_andmebaasi_parool"
+DB_HOSTNAME="localhost"
+PORT=8080
+SYNC=true
