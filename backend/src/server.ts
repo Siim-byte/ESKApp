@@ -79,13 +79,13 @@ const newRating = {
     .send(newRating)
 })
 app.delete('/ratings/:id', (req: Request, res: Response) => {
-    if (!req.params.id || isNaN(parseInt(req.params.id))) {
+if (!req.params.id || isNaN(parseInt(String(req.params.id)))) {
         return res.status(400).send({
             error: "Rating ID was not given or is invalid"
         })
     }
 
-    const ratingId = parseInt(req.params.id)
+const ratingId = parseInt(String(req.params.id));
     const ratingIndex = ratings.findIndex(rating => rating.id === ratingId)
 
     if (ratingIndex === -1) {
