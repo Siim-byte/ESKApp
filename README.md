@@ -9,6 +9,7 @@ rakenduses saab vaatada erinavaid skateparke üle eesti maakese
 1. klooni repositoorium
 1. ava kaust VS Code-iga või muu IDE-GA
 1. Ava terminal `cmd` ja mine `backend` kausta
+Installi andmebaasi draiveri pakett: `npm install mariadb`
 1. install Node-i paketid `npm install`
 1. käivita arendus `npm run dev`
 
