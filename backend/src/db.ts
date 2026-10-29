@@ -1,9 +1,9 @@
 import "dotenv/config";
 import { Sequelize, DataTypes } from 'sequelize';
 
-//modelite pathid
-import SkateparkModel from "../src/models/skatepark.ts"
-import  UserModel from "./models/User.ts";
+// Modelite pathid
+import SkateparkModel from "../src/models/skatepark.ts";
+import UserModel from "./models/User.ts";
 import UserFavoriteModel from './models/favorite.ts';
 import CommentModel from "./models/comment.ts";
 
@@ -41,28 +41,25 @@ const connect = async (): Promise<void> => {
         console.error("db connection error", error);
     }
 };
-const _Skatepark = SkateparkModel(sequelize )
-const _User = UserModel(sequelize )
-const _Comment = CommentModel(sequelize)
-//andmebaasi instants ja seostused
 
+const _Skatepark = SkateparkModel(sequelize);
+const _User = UserModel(sequelize);
+const _Comment = CommentModel(sequelize);
+const _UserFavorite = UserFavoriteModel(sequelize, DataTypes); 
+
+// Andmebaasi instants ja seostused
 const db = {
     Sequelize, 
     sequelize,
     skateparks: _Skatepark,
     users: _User,
-    comments: _Comment
+    comments: _Comment,
+    userFavorites: _UserFavorite 
 };
-//db.userFavorites = require("./models/favorites.ts")(sequelize, DataTypes, db.skateparks, db.users)
-//db.skateparks.BelongsToMany(db.users,{through: db.userFavorites, as: "userid"})
-//db.users.belongsTo(db.skateparks, {through: db.userFavorites, as: "skateparkid"})
 
-
-//db.users.HasMany(db.userFavorites, {foreignKey: "userid" as "skateparkid"})
-//db.userFavorites.BelongsTo(db.users, {foreignKey: "userid" as "skateparkid"})
 const sync = async(): Promise<void> => {
-    await sequelize.sync({alter:true})
-    console.log("DB is synced")
-}
+    await sequelize.sync({ alter: true });
+    console.log("DB is synced");
+};
 
 export { db, sync, connect };

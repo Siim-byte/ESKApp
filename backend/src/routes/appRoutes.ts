@@ -3,6 +3,8 @@ import SkateparksController from "../controllers/SkateparksController.ts";
 import UsersController from "../controllers/UsersController.ts";
 import { User } from "../models/User.ts";
 import UserCommentsController from "../controllers/UserCommentsController.ts";
+import UserFavoritesController from "../controllers/UserFavoritesController.ts";
+import checkRequestBody from "../controllers/middleware/checkRequestBody.ts";
 
 
 export default (app: express.Application): void => {
@@ -32,5 +34,14 @@ export default (app: express.Application): void => {
     app.route("/comments/:id")
     .get(UserCommentsController.getCommentById)
     .delete(UserCommentsController.deleteByID)
+    
 
+    app.route("/favorites")
+  .get(UserFavoritesController.getFavorites)
+  .post(checkRequestBody, UserFavoritesController.create); 
+
+    app.route("/favorites/:id")
+    .get(UserFavoritesController.getFavoriteById)
+    .put(UserFavoritesController.update)
+    .delete(UserFavoritesController.remove);
 }
