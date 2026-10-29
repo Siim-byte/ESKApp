@@ -24,3 +24,6 @@ app.listen(port, async() => {
     
 })
 
+app.get('/', (req, res) => {
+  res.send('ESKApp API töötab!');
+});
