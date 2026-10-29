@@ -8,29 +8,23 @@ const userFavorites = (db as any).userFavorites;
 const UserFavoritesController = {
     async create(req: Request, res: Response) {
         try {
-            if (!req.body.UserID || !req.body.SkateparkID) {
+            const incomingUserId = req.body.UserID || req.body.userId || req.body.user_id;
+            const incomingSkateparkId = req.body.SkateparkID || req.body.skateparkId || req.body.skatepark_id;
+
+            if (!incomingUserId || !incomingSkateparkId) {
                 return res.status(400).send({
                     error: "Missing parameters, please review data"
                 });
             }
 
-            const existingFavorite = await userFavorites.findOne({
-                where: {
-                    UserID: req.body.UserID,
-                    SkateparkID: req.body.SkateparkID
-                }
-            });
-
-            if (existingFavorite) {
-                return res.status(409).send({
-                    error: "Favorite already exists"
-                });
-            }
-
             const newUserFavorites = {
                 id: uuidv7(),
-                UserID: req.body.UserID,
-                SkateparkID: req.body.SkateparkID
+                userID: incomingUserId,
+                skateparkID: incomingSkateparkId,
+                userId: incomingUserId,
+                skateparkId: incomingSkateparkId,
+                user_id: incomingUserId,
+                skatepark_id: incomingSkateparkId
             };
 
             const addedUserFavorite = await userFavorites.create(newUserFavorites);
