@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Sequelize, DataTypes } from 'sequelize';
 
 //modelite pathid
@@ -6,16 +7,31 @@ import  UserModel from "./models/User.ts";
 import UserFavoriteModel from './models/favorite.ts';
 import CommentModel from "./models/comment.ts";
 
+console.log("KONTROLL:", {
+    name: process.env.DB_NAME,
+    user: process.env.DB_USERNAME,
+    host: process.env.DB_HOSTNAME,
+    db_port: process.env.DB_PORT,
+    app_port: process.env.PORT
+});
 const sequelize = new Sequelize(
     process.env.DB_NAME!,
     process.env.DB_USERNAME!,
     process.env.DB_PASSWORD!,
     {
         host: process.env.DB_HOSTNAME!,
+        port: Number(process.env.DB_PORT) || 3306,
         dialect: "mariadb",
+        dialectOptions: {
+            connectTimeout: 60000, 
+            ssl: {
+                rejectUnauthorized: false 
+            }
+        },
         logging: console.log,
     }
 );
+
 
 const connect = async (): Promise<void> => {
     try {

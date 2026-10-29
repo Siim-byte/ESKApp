@@ -53,7 +53,10 @@ export default function initSkateparkModel(sequelize: Sequelize)
     },
     {
       sequelize,
-      modelName: "Game"
+      modelName: "skatepark",
+      tableName: "skateparks",
+      freezeTableName: true,
+      underscored: true
     }
   )
   return Skatepark;

@@ -1,57 +1,70 @@
 import * as express from "express"
-import { db } from "../db.ts";
-import Utilities from "../Utilities.ts";
-import { v7 as uuidv7 } from "uuid";
-import {error} from "node:console";
-import type {Skatepark} from "../models/skatepark.ts"
+import { db } from "../db.ts"
+import Utilities from "../Utilities.ts"
+import { v7 as uuidv7 } from "uuid"
 
 const SkateparksController = {
-        async create(req: express.Request, res: express.Response){
-    if (
-        !req.body.name || 
-        !req.body.description ||
-        !req.body.city ||
-        !req.body.aadress ||
-        !req.body.latitude ||
-        !req.body.longitude ||
-        !req.body.admin_id
-    ) {
-        return res.status(400).send(
-            {
-                error: "Missing parameters, please review data"
-            }
-        );
-    
-    }
-    const newSkatepark = {
-        id: uuidv7(),
-        name: req.body.name,
-        description: req.body.description,
-        city: req.body.city,
-        aadress: req.body.aadress,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        admin_id: req.body.admin_id
-    }
-    const createdSkatepark = await db.skateparks.create(newSkatepark);
-    return res
-    .location(`${Utilities.getBaseURL(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
-    },
-    async getAll(req: express.Request, res: express.Response) {
-        const skateparks = await db.skateparks.findAll();
-        console.log("GetAll: "+skateparks)
-        return res
-        .status(200)
-        .send(
-            skateparks.map
-            (
-                ({id, name}) => {return {id, name}}
-            )
-        )
-        
-    },
-    async getByID(req: express.Request, res: express.Response) {
+    async create(req: express.Request, res: express.Response){
+        const incomingAddress = req.body.address || req.body.aadress || req.body.adress;
 
+        if (
+            !req.body.name || 
+            !req.body.description ||
+            !req.body.city ||
+            !incomingAddress || 
+            !req.body.latitude ||
+            !req.body.longitude ||
+            !req.body.admin_id
+        ) {
+            return res.status(400).send(
+                {
+                    error: "Missing parameters, please review data"
+                }
+            );
+        }
+
+        const newSkatepark = {
+            id: uuidv7(),
+            name: req.body.name,
+            description: req.body.description,
+            city: req.body.city,
+            address: incomingAddress, 
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
+            admin_id: req.body.admin_id
+        }
+
+        const createdSkatepark = await db.skateparks.create(newSkatepark);
+        return res
+        .location(`${Utilities.getBaseURL(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
+    },
+
+    async getAll(req: express.Request, res: express.Response) {
+        try {
+            const skateparks = await db.skateparks.findAll();
+            console.log("GetAll tulemus:", skateparks);
+            
+            if (!skateparks || skateparks.length === 0) {
+                return res.status(200).send([]);
+            }
+
+            const formattedSkateparks = skateparks.map((park: any) => {
+                const data = park.get ? park.get({ plain: true }) : park;
+                return {
+                    id: data.id || data.ID,
+                    name: data.name || data.NAME
+                };
+            });
+
+            return res.status(200).send(formattedSkateparks);
+            
+        } catch (err) {
+            console.error("Viga getAll funktsioonis:", err);
+            return res.status(500).send({ error: "Andmebaasi päring ebaõnnestus" });
+        }
+    },
+
+    async getByID(req: express.Request, res: express.Response) {
         const skatepark = await SkateparksController.getSkatepark(req, res);
         if (!skatepark) {
             console.log("no skatepark");
@@ -59,19 +72,21 @@ const SkateparksController = {
         }
         console.log("Skatepark is found");
         return res.status(200).send(skatepark)
-        
-        return skatepark
     },
+
     async modifyByID(req: express.Request, res: express.Response) {
         const skateparkToBeModified = await SkateparksController.getSkatepark(req, res)
         if (!skateparkToBeModified) {
             return;
         }
+
+        const incomingAddress = req.body.address || req.body.aadress || req.body.adress;
+
         if (
             !req.body.name || 
             !req.body.description ||
             !req.body.city ||
-            !req.body.aadress ||
+            !incomingAddress ||
             !req.body.latitude ||
             !req.body.longitude ||
             !req.body.admin_id
@@ -82,10 +97,11 @@ const SkateparksController = {
                 }
             )
         }
+
         skateparkToBeModified.name = req.body.name
         skateparkToBeModified.description = req.body.description
         skateparkToBeModified.city = req.body.city
-        skateparkToBeModified.address = req.body.aadress
+        skateparkToBeModified.address = incomingAddress
         skateparkToBeModified.latitude = req.body.latitude
         skateparkToBeModified.longitude = req.body.longitude
         
@@ -96,12 +112,11 @@ const SkateparksController = {
         .send(skateparkToBeModified)
     },
 
-        async deleteByID(req: express.Request, res: express.Response) {
+    async deleteByID(req: express.Request, res: express.Response) {
         let skateparkID: string = req.params.id as string
         if (!skateparkID) {
             return res.status(400).send({ error: "No ID is given" });
         }
-
 
         const skatepark = await db.skateparks.findByPk(skateparkID);
         if (!skatepark) {
@@ -116,17 +131,17 @@ const SkateparksController = {
     },
 
     async getSkatepark(req: express.Request, res: express.Response){
-    let skateparkID: string = req.params.id as string
-    console.log(skateparkID)
-    const skatepark = await db.skateparks.findByPk(skateparkID)
-    if(!skatepark) {
-        console.log("Skatepark not found")
-        res.status(404).send({
-            error: `Skatepark with this ID is not found. ${skateparkID}`
-        })
-        return null;
-    }
-    return skatepark
+        let skateparkID: string = req.params.id as string
+        console.log(skateparkID)
+        const skatepark = await db.skateparks.findByPk(skateparkID)
+        if(!skatepark) {
+            console.log("Skatepark not found")
+            res.status(404).send({
+                error: `Skatepark with this ID is not found. ${skateparkID}`
+            })
+            return null;
+        }
+        return skatepark
     },
 
     async addToFavorites(req: express.Request, res: express.Response) {
