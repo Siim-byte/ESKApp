@@ -1,19 +1,11 @@
 import "dotenv/config";
 import { Sequelize, DataTypes } from 'sequelize';
 
-// Modelite pathid
-import SkateparkModel from "../src/models/skatepark.ts";
-import UserModel from "./models/User.ts";
-import UserFavoriteModel from './models/favorite.ts';
-import CommentModel from "./models/comment.ts";
+import initSkateparkModel from "./models/skatepark.ts";
+import initUserModel from "./models/User.ts";
+import initUserFavoriteModel from './models/favorite.ts';
+import initCommentModel from "./models/comment.ts";
 
-console.log("KONTROLL:", {
-    name: process.env.DB_NAME,
-    user: process.env.DB_USERNAME,
-    host: process.env.DB_HOSTNAME,
-    db_port: process.env.DB_PORT,
-    app_port: process.env.PORT
-});
 const sequelize = new Sequelize(
     process.env.DB_NAME!,
     process.env.DB_USERNAME!,
@@ -32,7 +24,6 @@ const sequelize = new Sequelize(
     }
 );
 
-
 const connect = async (): Promise<void> => {
     try {
         await sequelize.authenticate();
@@ -42,13 +33,12 @@ const connect = async (): Promise<void> => {
     }
 };
 
-const _Skatepark = SkateparkModel(sequelize);
-const _User = UserModel(sequelize);
-const _Comment = CommentModel(sequelize);
-const _UserFavorite = UserFavoriteModel(sequelize, DataTypes); 
+const _Skatepark = initSkateparkModel(sequelize);
+const _User = initUserModel(sequelize);
+const _Comment = initCommentModel(sequelize);
+const _UserFavorite = initUserFavoriteModel(sequelize, DataTypes); 
 
-// Andmebaasi instants ja seostused
-const db = {
+const db: any = {
     Sequelize, 
     sequelize,
     skateparks: _Skatepark,
@@ -58,8 +48,18 @@ const db = {
 };
 
 const sync = async(): Promise<void> => {
-    await sequelize.sync({ alter: true });
-    console.log("DB is synced");
+    try {
+        await connect();
+        
+        // Sunnime mõlemad põhimudelid ükshaaval enne globaalset sünkroniseerimist käima
+        await _Skatepark.sync();
+        await _User.sync();
+        
+        await sequelize.sync();
+        console.log("Andmebaasi täielik sünkroniseerimine õnnestus (DB is synced)");
+    } catch (err) {
+        console.error("Viga sünkroniseerimisel:", err);
+    }
 };
 
 export { db, sync, connect };

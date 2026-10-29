@@ -23,7 +23,7 @@ export default (app: express.Application): void => {
 
     app.route("/users/:id")
     .get(UsersController.getById)
-    .get(UsersController.modifyById)
+    .put(UsersController.modifyById)
     .delete(UsersController.deleteById)
 
 

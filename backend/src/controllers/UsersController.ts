@@ -1,46 +1,65 @@
 import * as express from "express";
 import { db } from "../db.ts";
 import Utilities from "../Utilities.ts";
-import { v7 as uuidv7 } from "uuid";
-import {User} from "../models/User.ts"
+import { User } from "../models/User.ts";
 import SkateparksController from "./SkateparksController.ts";
-
 
 const UsersController = {
     async create(req: express.Request, res: express.Response) {
+        const incomingPassword = req.body.Password_hash || req.body.password_hash || req.body.Password || req.body.password;
+        const incomingConfirmation = req.body.PasswordConfirmation || req.body.passwordConfirmation;
+
         if (!req.body.display_name || 
         !req.body.email ||
-        !req.body.password_hash ||
-        !req.body.PasswordConfirmation) {
+        !incomingPassword ||
+        !incomingConfirmation) {
             return res.status(400)
             .send({error:"Missing parameters, please check your info."})
         }
-        if (req.body.Password_hash != req.body.PasswordConfirmation) 
-            {
+
+        if (incomingPassword !== incomingConfirmation) {
             return res.status(406)
             .send({error:"Passwords do not match, please check your info."})            
         }
-        const passwordHash = await Utilities.gimmePassword(req.body.Password)
+
+        const passwordHash = await Utilities.gimmePassword(incomingPassword)
 
         const result = await db.users.create({
-            id: uuidv7(),
             display_name: req.body.display_name,
             email: req.body.email,
-            role: req.body.role,
+            role: req.body.role || "user",
             password_hash: passwordHash
         })
 
         return res.location(`${Utilities.getBaseURL(req)}/users/${result.id}`).sendStatus(201);
+    },
 
-    },
     async getAll(req: express.Request, res: express.Response) {
-        const users = await db.users.findAll();
-        console.log("getAll"+users)
-        return res.status(200).send(users.map(
-            ({id, display_name, email }) => {return {id, display_name, email}}
-        ))
-        
+        try {
+            const users = await db.users.findAll();
+            console.log("getAll tulemus:", users);
+            
+            if (!users || users.length === 0) {
+                return res.status(200).send([]);
+            }
+
+            const formattedUsers = users.map((u: any) => {
+                const data = u.get ? u.get({ plain: true }) : u;
+                return {
+                    id: data.id || data.ID || "",
+                    display_name: data.display_name || data.DISPLAY_NAME || "",
+                    email: data.email || data.EMAIL || ""
+                };
+            });
+
+            return res.status(200).send(formattedUsers);
+            
+        } catch (err) {
+            console.error("Viga kasutajate getAll funktsioonis:", err);
+            return res.status(500).send({ error: "Andmebaasi päring ebaõnnestus" });
+        }
     },
+
     async getById(req: express.Request, res: express.Response) {
         const user = await UsersController.getUser(req,res)
         if (!user) {
@@ -48,56 +67,50 @@ const UsersController = {
         }
         return res.status(200).send(user)
     },
+
     async modifyById(req: express.Request, res: express.Response) {
-        if(!req.params.id) {
-            return res.status(400).send({"error":"No id supplied"})
+        if (!req.params.id) {
+            return res.status(400).send({ "error": "No id supplied" });
         }
-        console.log("+++++++ id is"+req.params.id);
         
-        const userToBeModified = await UsersController.getUser(req, res) as User
-        console.log("++++++ user is"+userToBeModified);
-        if (!req.body) {
-            return res.status(400).send({"error":"No body was supplied, nothing was changed"})
-        }
-        console.log("++++++ body: "+req.body);
-        
-        const modifiedUser = new User
-
-        modifiedUser.email = userToBeModified.email
-        modifiedUser.display_name = userToBeModified.display_name
-        modifiedUser.password_hash = userToBeModified.password_hash
-        modifiedUser.role = userToBeModified.role
-        modifiedUser.createdAt = userToBeModified.createdAt
-        modifiedUser.updatedAt = userToBeModified.updatedAt
-        modifiedUser.is_blocked = userToBeModified.is_blocked
-
-        if (req.body.display_name) {
-            modifiedUser.display_name = req.body.display_name
-        }
-        if (req.body.password_hash) {
-            if (req.body.password_hash != req.body.PasswordConfirmation)
-            {
-                return res.status(406)
-                .send({error:"Passwords do not match, please check your info."})
+        try {
+            const userToBeModified = await UsersController.getUser(req, res) as any;
+            if (!userToBeModified) {
+                return;
             }
-        }
-        if (req.body.role) {
-            modifiedUser.role = req.body.role
-        }
-        if (req.body.email) {
-            console.log("+++++ found email is")
+
+            if (!req.body) {
+                return res.status(400).send({ "error": "No body was supplied, nothing was changed" });
+            }
+
+            if (req.body.display_name) {
+                userToBeModified.display_name = req.body.display_name;
+            }
+            if (req.body.role) {
+                userToBeModified.role = req.body.role;
+            }
+            if (req.body.email) {
+                userToBeModified.email = req.body.email;
+            }
             
-            modifiedUser.email = req.body.email
-        }
-        modifiedUser.updatedAt = new Date()
-        console.log("+++++ modifieduser is: "+modifiedUser);
-        
-        await db.users.update(modifiedUser, {
-            where: {
-                id: req.params.id
+            if (req.body.password_hash) {
+                const incomingConf = req.body.PasswordConfirmation || req.body.passwordConfirmation;
+                if (req.body.password_hash !== incomingConf) {
+                    return res.status(406).send({ error: "Passwords do not match, please check your info." });
+                }
+                userToBeModified.password_hash = await Utilities.gimmePassword(req.body.password_hash);
             }
-        })
-        return res.location(`${Utilities.getBaseURL(req)}/users/${modifiedUser}`).status(201).send(modifiedUser)
+
+            await userToBeModified.save();
+
+            return res.location(`${Utilities.getBaseURL(req)}/users/${userToBeModified.id}`)
+                .status(201)
+                .send(userToBeModified);
+
+        } catch (err) {
+            console.error("Viga kasutaja muutmise funktsioonis:", err);
+            return res.status(500).send({ error: "Andmete uuendamine ebaõnnestus" });
+        }
     },
 
     async getUser(req: express.Request, res: express.Response) {
@@ -113,6 +126,7 @@ const UsersController = {
         }
         return user
     },
+
     async deleteById(req: express.Request, res: express.Response) {
         const userToBeDeleted = await UsersController.getUser(req, res)
         if (!userToBeDeleted) {
