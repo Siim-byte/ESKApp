@@ -43,14 +43,14 @@ async getCommentById(req: Request, res: Response) {
             });
         }
     },
-    async create(req: Request, res: Response) {
+async create(req: Request, res: Response) {
         try {
             const newComment = {
                 commentsID: uuidv7(),
-                UserID: req.body.UserID,
-                SkateparkID: req.body.SkateparkID,
-                Content: req.body.Content,
-                Is_hidden: req.body.Is_hidden ?? false
+                userID: req.body.userID || req.body.UserID || req.body.userId,
+                skateparkID: req.body.skateparkID || req.body.SkateparkID || req.body.skateparkId,
+                content: req.body.content || req.body.Content,
+                is_hidden: req.body.is_hidden ?? req.body.Is_hidden ?? false
             };
 
             const createdComment = await db.comments.create(newComment);
@@ -92,6 +92,39 @@ async getCommentById(req: Request, res: Response) {
         } catch (error) {
             return res.status(500).send({
                 error: "Internal server error while deleting comment",
+                details: error instanceof Error ? error.message : error
+            });
+        }
+    },
+    async modifyByID(req: Request, res: Response) {
+        try {
+            const commentId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+            if (!commentId) {
+                return res.status(400).send({
+                    error: "commentsID missing or invalid"
+                });
+            }
+            const comment = await db.comments.findByPk(commentId);
+            if (!comment) {
+                return res.status(404).send({
+                    error: "Comment not found"
+                });
+            }
+            const updatedData = {
+                content: req.body.content || req.body.Content,
+                is_hidden: req.body.is_hidden ?? req.body.Is_hidden
+            };
+            Object.keys(updatedData).forEach(key => 
+                (updatedData as any)[key] === undefined && delete (updatedData as any)[key]
+            );
+            await comment.update(updatedData);
+            return res.status(200).send({
+                message: "Comment successfully updated",
+                comment
+            });
+        } catch (error) {
+            return res.status(500).send({
+                error: "Internal server error while updating comment",
                 details: error instanceof Error ? error.message : error
             });
         }

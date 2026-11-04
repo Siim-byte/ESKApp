@@ -16,9 +16,11 @@ const sequelize = new Sequelize(
         dialect: "mariadb",
         dialectOptions: {
             connectTimeout: 60000, 
-            ssl: {
-                rejectUnauthorized: false 
-            }
+            // sql ssl not enabled
+            // ssl: {
+            //     rejectUnauthorized: false 
+            // }
+            
         },
         logging: console.log,
     }

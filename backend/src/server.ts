@@ -79,13 +79,13 @@ const newRating = {
     .send(newRating)
 })
 app.delete('/ratings/:id', (req: Request, res: Response) => {
-if (!req.params.id || isNaN(parseInt(String(req.params.id)))) {
+    if (!req.params.id || isNaN(parseInt(req.params.id))) {
         return res.status(400).send({
             error: "Rating ID was not given or is invalid"
         })
     }
 
-const ratingId = parseInt(String(req.params.id));
+    const ratingId = parseInt(req.params.id)
     const ratingIndex = ratings.findIndex(rating => rating.id === ratingId)
 
     if (ratingIndex === -1) {
@@ -255,7 +255,7 @@ app.post("/comments", (req: Request, res: Response) => {
         return;
     }
     const newComment = {
-        commentID: nextCommentsId++,
+        commentsID: nextCommentsId++,
         userID: userID,
         skateparkID: skateparkID,
         content: content
@@ -292,7 +292,43 @@ app.delete('/comments/:id', (req: Request, res: Response) => {
     });
 });
 
-
+app.put('/comments/:id', async (req: Request, res: Response) => {
+    try {
+        const rawId = req.params.id;
+        const commentId = Array.isArray(rawId) ? rawId[0] : rawId;
+        if (!commentId) {
+            return res.status(400).send({
+                error: "Comment ID was not given or is invalid"
+            });
+        }
+        if (!req.body || !req.body.content) {
+            return res.status(400).send({
+                error: "Missing parameters, please review data"
+            });
+        }
+        const commentToBeModified = await db.comments.findByPk(commentId);
+        if (!commentToBeModified) {
+            return res.status(404).send({
+                error: "Comment not found"
+            });
+        }
+        commentToBeModified.content = req.body.content;
+        if (req.body.is_hidden !== undefined) {
+            commentToBeModified.is_hidden = req.body.is_hidden;
+        }
+        await commentToBeModified.save();
+        return res.status(200).send({
+            message: "Comment successfully modified",
+            comment: commentToBeModified
+        });
+    } catch (error: any) {
+        console.error("Error updating comment:", error);
+        return res.status(500).send({
+            error: "Internal server error",
+            details: error?.message || String(error)
+        });
+    }
+});
 
 
 
