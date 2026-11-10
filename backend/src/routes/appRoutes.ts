@@ -1,7 +1,6 @@
 import type express from "express"
 import SkateparksController from "../controllers/SkateparksController.ts";
 import UsersController from "../controllers/UsersController.ts";
-import { User } from "../models/User.ts";
 import UserCommentsController from "../controllers/UserCommentsController.ts";
 import UserFavoritesController from "../controllers/UserFavoritesController.ts";
 import checkRequestBody from "../controllers/middleware/checkRequestBody.ts";
