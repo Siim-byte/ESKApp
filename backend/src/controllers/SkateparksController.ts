@@ -13,8 +13,8 @@ const SkateparksController = {
             !req.body.city ||
             !incomingAddress || 
             !req.body.latitude ||
-            !req.body.longitude ||
-            !req.body.admin_id
+            !req.body.longitude
+            // !req.body.admin_id
         ) {
             return res.status(400).send(
                 {
@@ -31,7 +31,7 @@ const SkateparksController = {
             address: incomingAddress, 
             latitude: req.body.latitude,
             longitude: req.body.longitude,
-            admin_id: req.body.admin_id
+            // admin_id: req.body.admin_id
         }
 
         const createdSkatepark = await db.skateparks.create(newSkatepark);
@@ -88,8 +88,8 @@ const SkateparksController = {
             !req.body.city ||
             !incomingAddress ||
             !req.body.latitude ||
-            !req.body.longitude ||
-            !req.body.admin_id
+            !req.body.longitude
+            // !req.body.admin_id
         ) {
             return res.status(400).send(
                 {
