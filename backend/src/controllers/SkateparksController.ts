@@ -5,6 +5,7 @@ import { v7 as uuidv7 } from "uuid"
 
 const SkateparksController = {
     async create(req: express.Request, res: express.Response){
+        // #swagger.tags = ['Skateparks']
         const incomingAddress = req.body.address || req.body.aadress || req.body.adress;
 
         if (
@@ -40,6 +41,7 @@ const SkateparksController = {
     },
 
     async getAll(req: express.Request, res: express.Response) {
+        // #swagger.tags = ['Skateparks']
         try {
             const skateparks = await db.skateparks.findAll();
             console.log("GetAll tulemus:", skateparks);
@@ -65,6 +67,7 @@ const SkateparksController = {
     },
 
     async getByID(req: express.Request, res: express.Response) {
+        // #swagger.tags = ['Skateparks']
         const skatepark = await SkateparksController.getSkatepark(req, res);
         if (!skatepark) {
             console.log("no skatepark");
@@ -75,6 +78,7 @@ const SkateparksController = {
     },
 
     async modifyByID(req: express.Request, res: express.Response) {
+        // #swagger.tags = ['Skateparks']
         const skateparkToBeModified = await SkateparksController.getSkatepark(req, res)
         if (!skateparkToBeModified) {
             return;
@@ -113,6 +117,7 @@ const SkateparksController = {
     },
 
     async deleteByID(req: express.Request, res: express.Response) {
+        // #swagger.tags = ['Skateparks']
         let skateparkID: string = req.params.id as string
         if (!skateparkID) {
             return res.status(400).send({ error: "No ID is given" });

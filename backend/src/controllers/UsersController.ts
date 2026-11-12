@@ -6,6 +6,7 @@ import SkateparksController from "./SkateparksController.ts";
 
 const UsersController = {
     async create(req: express.Request, res: express.Response) {
+                // #swagger.tags = ['Users']
         const incomingPassword = req.body.Password_hash || req.body.password_hash || req.body.Password || req.body.password;
         const incomingConfirmation = req.body.PasswordConfirmation || req.body.passwordConfirmation;
 
@@ -35,6 +36,7 @@ const UsersController = {
     },
 
     async getAll(req: express.Request, res: express.Response) {
+        // #swagger.tags = ['Users']
         try {
             const users = await db.users.findAll();
             console.log("getAll tulemus:", users);
@@ -61,6 +63,7 @@ const UsersController = {
     },
 
     async getById(req: express.Request, res: express.Response) {
+        // #swagger.tags = ['Users']
         const user = await UsersController.getUser(req,res)
         if (!user) {
             return
@@ -69,6 +72,7 @@ const UsersController = {
     },
 
     async modifyById(req: express.Request, res: express.Response) {
+        // #swagger.tags = ['Users']
         if (!req.params.id) {
             return res.status(400).send({ "error": "No id supplied" });
         }
@@ -114,6 +118,7 @@ const UsersController = {
     },
 
     async getUser(req: express.Request, res: express.Response) {
+        // #swagger.tags = ['Users']
         let userID: string = req.params.id as string
         const user = await db.users.findByPk(userID);
         if(!user) {
@@ -128,6 +133,7 @@ const UsersController = {
     },
 
     async deleteById(req: express.Request, res: express.Response) {
+        // #swagger.tags = ['Users']
         const userToBeDeleted = await UsersController.getUser(req, res)
         if (!userToBeDeleted) {
             return

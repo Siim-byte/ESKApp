@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import { sync } from "../../backend/src/db.ts";
 import swaggerUI from "swagger-ui-express"
-import swaggerDoc from "./docs/swagger.json" with { type: "json"}
+import swaggerDoc from "./docs/swagger-autogen.json" with { type: "json"}
 
 
 import appRoutes from "../../backend/src/routes/appRoutes.ts"
