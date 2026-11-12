@@ -1,5 +1,21 @@
 {
   "devDependencies": {
     "@types/uuid": "^10.0.0"
-  }
+  },
+  "dependencies": {
+    "concurrently": "^10.0.7",
+    "nodemon": "^3.1.14"
+  },
+  "name": "eskapp",
+  "version": "1.0.0",
+  "description": "rakenduses saab vaatada erinavaid skateparke üle eesti maakese\r ### tegijad\r - Saimon siipan\r - Siim Belõi\r - Airon Tatrik",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"cd backend && nodemon .\" \" cd frontend && npm run dev\"",
+    "devstart": "concurrently \"cd backend && npm run dev .\" \" cd frontend && npm run dev\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
