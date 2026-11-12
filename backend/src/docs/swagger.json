@@ -1,40 +1,206 @@
 {
-    "openapi":"3.0.3",
-    "info": {
-
-            "title":"Skateparks API",
-            "version":"1.0.0",
-            "description": "Hajusrakenduste näidisprojekt"
-    },
-        
-            "paths": {
-                "/skateparks": {
-                    "get": {
-                        "summary":"Päri loetelu skateparkidest",
-                        "responses":{
-                            "200":{
-                                "description": "",
-                                "content": {
-                            "application/json": {
-                                "schema":{
-                                    "type": "object",
-                                    "properties": {
-                                        "id":{
-                                            "type": "string",
-                                            "example": "abcxv-123"
-                                        },
-                                        "name":{
-                                            "type": "string",
-                                            "example": "Tallinna skatepark"
-                                        }
-                                    }
-                                }
-                            }
-                        }      
-                    }    
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Skateparks API",
+    "description": "Hajusrakenduste näidisprojekt",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/skateparks": {
+      "summary": "Create a new skatepark",
+      "description": "Returns a list of all skateparks in API",
+      "get": {
+        "summary": "Päri loetelu skateparkidest",
+        "responses": {
+          "200": {
+            "description": "Seccess",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkateparksListItem"
                 }
+              }
             }
+          }
         }
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkateparksCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "location": {
+                "description": "URL of created skatepark details endpoint",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/skateparks/{id}": {
+      "summary": "Skatepark details",
+      "description": "returns list of skatepark details",
+      "get": {
+        "summary": "Get skatepark by id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Modifybyid",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete skateparks by id",
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Id of requested skatepark",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/users": {
+      "summary": "Create a new user",
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {}
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "summary": "Users detail",
+      "description": "Returns list of user details",
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
     }
+  },
+  "components": {
+    "schemas": {
+      "SkateparksListItem": {
+        "title": "Skateparks List Item",
+        "type": "object"
+      },
+      "SkateparksCreate": {
+        "title": "Skatepark Create",
+        "description": "{\n             name: req.body.name,\n            description: req.body.description,\n            city: req.body.city,\n            address: incomingAddress, \n            latitude: req.body.latitude,\n            longitude: req.body.longitude,\n}",
+        "type": "object"
+      }
+    }
+  }
 }
-    
