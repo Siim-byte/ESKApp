@@ -1,7 +1,7 @@
 import * as express from "express";
 import { db } from "../db.ts";
 import Utilities from "../Utilities.ts";
-import { User } from "../models/User.ts";
+import { User } from "../models/user.ts";
 import SkateparksController from "./SkateparksController.ts";
 
 const UsersController = {

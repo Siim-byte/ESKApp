@@ -2,7 +2,7 @@ import "dotenv/config";
 import { Sequelize, DataTypes } from 'sequelize';
 
 import initSkateparkModel from "./models/skatepark.ts";
-import initUserModel from "./models/User.ts";
+import initUserModel from "./models/user.ts";
 import initUserFavoriteModel from './models/favorite.ts';
 import initCommentModel from "./models/comment.ts";
 
