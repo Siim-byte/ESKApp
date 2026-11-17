@@ -7,29 +7,52 @@
   },
   "paths": {
     "/skateparks": {
-      "summary": "Create a new skatepark",
-      "description": "Returns a list of all skateparks in API",
       "get": {
+        "tags": [
+          "Skateparks"
+        ],
         "summary": "Päri loetelu skateparkidest",
         "responses": {
           "200": {
-            "description": "Seccess",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SkateparksListItem"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SkateparksListItem"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Andmebaasi päring ebaõnnestus",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "post": {
+        "tags": [
+          "Skateparks"
+        ],
+        "summary": "Loo uus skatepark",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SkateparksCreate"
+                "$ref": "#/components/schemas/SkateparkInput"
               }
             }
           },
@@ -39,10 +62,20 @@
           "201": {
             "description": "Created",
             "headers": {
-              "location": {
-                "description": "URL of created skatepark details endpoint",
+              "Location": {
+                "description": "Skatepark Loodud",
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Puuduvad parameetrid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -51,17 +84,28 @@
       }
     },
     "/skateparks/{id}": {
-      "summary": "Skatepark details",
-      "description": "returns list of skatepark details",
       "get": {
-        "summary": "Get skatepark by id",
+        "tags": [
+          "Skateparks"
+        ],
+        "summary": "Päri skatepargi detailid ID järgi",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Skatepark"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skateparki ei leitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -69,14 +113,55 @@
         }
       },
       "put": {
-        "summary": "Modifybyid",
+        "tags": [
+          "Skateparks"
+        ],
+        "summary": "Muuda skatepargi andmeid ID järgi",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkateparkInput"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "201": {
-            "description": "Created",
+            "description": "Uuendatud",
+            "headers": {
+              "Location": {
+                "description": "Skatepark uuendatud",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Skatepark"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Puuduvad parameetrid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skateparki ei leitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -84,14 +169,46 @@
         }
       },
       "delete": {
-        "summary": "Delete skateparks by id",
+        "tags": [
+          "Skateparks"
+        ],
+        "summary": "Kustuta skatepark ID järgi",
         "responses": {
-          "204": {
-            "description": "No Content",
+          "200": {
+            "description": "Skatepark kustutatud",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Skatepark deleted successfully"
+                    },
+                    "deletedSkatepark": {
+                      "$ref": "#/components/schemas/Skatepark"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID puudub",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skateparki ei leitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -102,7 +219,96 @@
         {
           "name": "id",
           "in": "path",
-          "description": "Id of requested skatepark",
+          "description": "Skatepargi ID",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/skateparks/{id}/favorites": {
+      "post": {
+        "tags": [
+          "Skateparks"
+        ],
+        "summary": "Lisa skatepark lemmikutesse",
+        "responses": {
+          "201": {
+            "description": "Skatepark lisatud lemmikutesse",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Skatepark added to favorites"
+                    },
+                    "favorite": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "user_id": {
+                          "type": "string"
+                        },
+                        "skatepark_id": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "skatepark": {
+                      "$ref": "#/components/schemas/Skatepark"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Vigane või puuduv skatepargi ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Kasutaja ei ole sisse logitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skateparki ei leitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Skatepargi ID",
           "required": true,
           "schema": {
             "type": "string"
@@ -111,39 +317,110 @@
       ]
     },
     "/users": {
-      "summary": "Create a new user",
       "get": {
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "requestBody": {
-          "content": {
-            "application/json": {}
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
-      }
-    },
-    "/users/{id}": {
-      "summary": "Users detail",
-      "description": "Returns list of user details",
-      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Päri kasutajate loetelu",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UsersListItem"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Andmebaasi päring ebaõnnestus",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Loo uus kasutaja",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreateInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": {
+                "description": "Kasutaja loodud",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Puuduvad parameetrid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "Paroolid ei kattu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Päri kasutaja detailid ID järgi",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kasutajat ei leitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -151,13 +428,75 @@
         }
       },
       "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Muuda kasutaja andmeid ID järgi",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateInput"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "201": {
-            "description": "Created",
+            "description": "Andmed uuendatud",
+            "headers": {
+              "Location": {
+                "description": "Kasutaja uuendatud",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID või päringu sisu puudub",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kasutajat ei leitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "Paroolid ei kattu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Andmete uuendamine ebaõnnestus",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -165,13 +504,20 @@
         }
       },
       "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Kustuta kasutaja ID järgi",
         "responses": {
           "204": {
-            "description": "No Content",
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Kasutajat ei leitud",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -182,6 +528,7 @@
         {
           "name": "id",
           "in": "path",
+          "description": "Kasutaja ID",
           "required": true,
           "schema": {
             "type": "string"
@@ -192,15 +539,214 @@
   },
   "components": {
     "schemas": {
-      "SkateparksListItem": {
-        "title": "Skateparks List Item",
-        "type": "object"
+      "Skatepark": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "019339a2-7c4b-7000-8000-123456789abc"
+          },
+          "name": {
+            "type": "string",
+            "example": "Põhjala rulapark"
+          },
+          "description": {
+            "type": "string",
+            "example": "Vana rulapark"
+          },
+          "city": {
+            "type": "string",
+            "example": "Tallinn"
+          },
+          "address": {
+            "type": "string",
+            "example": "Marati 5"
+          },
+          "latitude": {
+            "type": "number",
+            "example": 59.4556
+          },
+          "longitude": {
+            "type": "number",
+            "example": 24.6778
+          }
+        }
       },
-      "SkateparksCreate": {
-        "title": "Skatepark Create",
-        "description": "{\n             name: req.body.name,\n            description: req.body.description,\n            city: req.body.city,\n            address: incomingAddress, \n            latitude: req.body.latitude,\n            longitude: req.body.longitude,\n}",
-        "type": "object"
+      "SkateparksListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "019339a2-7c4b-7000-8000-123456789abc"
+          },
+          "name": {
+            "type": "string",
+            "example": "Põhjala rulapark"
+          }
+        }
+      },
+      "SkateparkInput": {
+        "required": [
+          "name",
+          "description",
+          "city",
+          "address",
+          "latitude",
+          "longitude"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Põhjala rulapark"
+          },
+          "description": {
+            "type": "string",
+            "example": "Vana rulapark"
+          },
+          "city": {
+            "type": "string",
+            "example": "Tallinn"
+          },
+          "address": {
+            "type": "string",
+            "example": "Marati 5"
+          },
+          "latitude": {
+            "type": "number",
+            "example": 59.4556
+          },
+          "longitude": {
+            "type": "number",
+            "example": 24.6778
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "display_name": {
+            "type": "string",
+            "example": "Jaan"
+          },
+          "email": {
+            "type": "string",
+            "example": "j@j.com"
+          },
+          "role": {
+            "type": "string",
+            "example": "user"
+          },
+          "password_hash": {
+            "type": "string",
+            "example": "Parool123"
+          }
+        }
+      },
+      "UsersListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "display_name": {
+            "type": "string",
+            "example": "Jaan"
+          },
+          "email": {
+            "type": "string",
+            "example": "j@j.com"
+          }
+        }
+      },
+      "UserCreateInput": {
+        "required": [
+          "display_name",
+          "email",
+          "password",
+          "passwordConfirmation"
+        ],
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "example": "Jaan"
+          },
+          "email": {
+            "type": "string",
+            "example": "j@j.com"
+          },
+          "role": {
+            "type": "string",
+            "example": "user"
+          },
+          "password": {
+            "type": "string",
+            "example": "Parool123!"
+          },
+          "passwordConfirmation": {
+            "type": "string",
+            "example": "Parool123!"
+          }
+        }
+      },
+      "UserUpdateInput": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "example": "juhan"
+          },
+          "email": {
+            "type": "string",
+            "example": "jh@jh.com"
+          },
+          "role": {
+            "type": "string",
+            "example": "admin"
+          },
+          "password_hash": {
+            "type": "string",
+            "example": "TurvalineParool123!"
+          },
+          "passwordConfirmation": {
+            "type": "string",
+            "example": "TurvalineParool123!"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Missing parameters, please check your info."
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Skateparks",
+      "description": "Rulaparkide haldus"
+    },
+    {
+      "name": "Users",
+      "description": "Kasutajate haldus"
+    }
+  ]
 }
+
+
