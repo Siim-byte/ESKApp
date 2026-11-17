@@ -1,47 +1,36 @@
 import type express from "express"
-import SkateparksController from "../controllers/SkateparksController.ts";
-import UsersController from "../controllers/UsersController.ts";
-import UserCommentsController from "../controllers/UserCommentsController.ts";
-import UserFavoritesController from "../controllers/UserFavoritesController.ts";
-import checkRequestBody from "../controllers/middleware/checkRequestBody.ts";
+import skateparkRoutes from "./skateparkRoutes.ts"
+import userRoutes from "./userRouters.ts"
+import commentRoutes from "./commentRoutes.ts"
+import favoriteRoutes from "./favoriteRoutes.ts"
 
 
 export default (app: express.Application): void => {
-    app.route("/skateparks")
-    .get(SkateparksController.getAll)
-    .post(SkateparksController.create)
+      // Globaalne 500 vastus kõigile allolevatele otspunktidele
+    app.use((req, res, next) => {
+        /* #swagger.responses = { 
+            description: 'Internal Server Error' 
+        } */
+        next();
+    });
 
-    app.route("/skateparks/:id")
-    .get(SkateparksController.getByID)
-    .delete(SkateparksController.deleteByID)
-    .put(SkateparksController.modifyByID)
-    
-    app.route("/users")
-    .get(UsersController.getAll)
-    .post(UsersController.create)
+    app.use("/skateparks", (req, res, next) => {
+        // #swagger.tags = ['Skateparks']
+        next();
+    }, skateparkRoutes);
 
-    app.route("/users/:id")
-    .get(UsersController.getById)
-    .put(UsersController.modifyById)
-    .delete(UsersController.deleteById)
+    app.use("/users", (req, res, next) => {
+        // #swagger.tags = ['Users']
+        next();
+    }, userRoutes);
 
+    app.use("/usercomments", (req, res, next) => {
+        // #swagger.tags = ['UserComments']
+        next();
+    }, commentRoutes);
 
-    app.route("/comments")
-    .get(UserCommentsController.GetAll)
-    .post(UserCommentsController.create)
-    
-    app.route("/comments/:id")
-    .get(UserCommentsController.getCommentById)
-    .delete(UserCommentsController.deleteByID)
-    .put(UserCommentsController.modifyByID)
-    
-
-    app.route("/favorites")
-  .get(UserFavoritesController.getFavorites)
-  .post(checkRequestBody, UserFavoritesController.create); 
-
-    app.route("/favorites/:id")
-    .get(UserFavoritesController.getFavoriteById)
-    .put(UserFavoritesController.update)
-    .delete(UserFavoritesController.remove);
-}
+    app.use("/favorites", (req, res, next) => {
+        // #swagger.tags = ['Favorites']
+        next();
+    }, favoriteRoutes);
+};

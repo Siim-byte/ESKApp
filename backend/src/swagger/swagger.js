@@ -1,6 +1,5 @@
 import swaggerAutogen from 'swagger-autogen';
 import dotenv from 'dotenv';
-import { describe } from 'node:test';
 dotenv.config();
 
 const doc = {
@@ -10,7 +9,13 @@ const doc = {
         version: "1.0.0"
     },
     host: process.env.HOST+':'+process.env.PORT,
-    tags: [{name: 'Skateparks'}, {name: 'Users'}]
+    tags: [
+        {name: 'Skateparks'},
+         {name: 'Users'},
+         {name: 'Comments'},
+         {name: 'Favorites'}
+
+    ]
 };
 
 const outputFile = '../docs/swagger-autogen.json';
