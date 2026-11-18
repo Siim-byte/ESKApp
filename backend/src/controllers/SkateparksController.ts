@@ -36,7 +36,7 @@ const SkateparksController = {
 
         const createdSkatepark = await db.skateparks.create(newSkatepark);
         return res
-        .location(`${Utilities.getBaseURL(req)}/skateparks/${createdSkatepark.id}`).sendStatus(201);
+        .location(`${Utilities.getBaseURL(req)}/skateparks/${createdSkatepark.id}`).send({"OK":"OK"}).status(201);
     },
 
     async getAll(req: express.Request, res: express.Response) {
