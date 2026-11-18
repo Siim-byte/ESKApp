@@ -20,7 +20,7 @@ Link to project https://github.com/users/Siim-byte/projects/4
 1. konstrueeri produktsiooni kood käsuga `npm run build`
 1. käivita toodangu kood käsuga `npm run start`
 
-<img width="903" height="700" alt="image" src="https://github.com/users/Siim-byte/projects/4/views/1?filterQuery=" />
+<img width="924" height="728" alt="{CE81CA7E-BB70-4B16-884A-B1C7260D44A3}" src="https://github.com/user-attachments/assets/071c0cb0-2ac1-436b-84eb-f7f73d305e36" />
 
 ## Keskkonnamuutujate seadistamine (.env)
 
