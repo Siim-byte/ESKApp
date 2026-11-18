@@ -446,6 +446,203 @@
           }
         }
       ]
+    },
+    "/favorites": {
+      "get": {
+        "tags": [
+          "Favorites"
+        ],
+        "summary": "päri lemmikute loetelu",
+        "responses": {
+          "200": {
+            "description": "Successful ",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Favorites"
+        ],
+        "summary": "lisa uus lemmik ",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FavoritesInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "favorite skatepark": {
+                "description": "Lemmik loodud",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Puuduvad parameetrid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/favorites/{id}": {
+      "get": {
+        "tags": [
+          "Favorites"
+        ],
+        "summary": "Päri lemmiku detailid ID järgi",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Favorites"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lemmikut ei leitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Favorites"
+        ],
+        "summary": "Muuda lemmiku andmeid ID järgi",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "userID",
+                  "skateparkID"
+                ],
+                "type": "object",
+                "properties": {
+                  "userID": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "skateparkID": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Uuendatud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Favorites"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Puuduvad parameetrid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lemmikut ei leitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Favorites"
+        ],
+        "summary": "Kustuta lemmik ID järgi",
+        "responses": {
+          "204": {
+            "description": "Lemmik kustutatud"
+          },
+          "400": {
+            "description": "ID puudub",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lemmikut ei leitud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Lemmiku ID (FavoritesID)",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
     }
   },
   "components": {
@@ -639,6 +836,50 @@
             "example": "Missing parameters, please check your info."
           }
         }
+      },
+      "Favorites": {
+        "type": "object",
+        "properties": {
+          "FavoritesID": {
+            "format": "uuid",
+            "type": "string",
+            "example": "019339a2-7c4b-7000-8000-123456789abc"
+          },
+          "userID": {
+            "format": "uuid",
+            "type": "string",
+            "example": "019339a2-7c4b-7000-8000-987654321fed"
+          },
+          "skateparkID": {
+            "format": "uuid",
+            "type": "string",
+            "example": "019339a2-7c4b-7000-8000-123456789abc"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-10-25T12:00:00.000Z"
+          }
+        }
+      },
+      "FavoritesInput": {
+        "required": [
+          "userID",
+          "skateparkID"
+        ],
+        "type": "object",
+        "properties": {
+          "userID": {
+            "format": "uuid",
+            "type": "string",
+            "example": "019339a2-7c4b-7000-8000-987654321fed"
+          },
+          "skateparkID": {
+            "format": "uuid",
+            "type": "string",
+            "example": "019339a2-7c4b-7000-8000-123456789abc"
+          }
+        }
       }
     },
     "securitySchemes": {
@@ -656,6 +897,10 @@
     {
       "name": "Users",
       "description": "Kasutajate haldus"
+    },
+    {
+      "name": "Favorites",
+      "description": "Lemmikute haldus"
     }
   ]
 }
