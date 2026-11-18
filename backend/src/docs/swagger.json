@@ -227,95 +227,6 @@
         }
       ]
     },
-    "/skateparks/{id}/favorites": {
-      "post": {
-        "tags": [
-          "Skateparks"
-        ],
-        "summary": "Lisa skatepark lemmikutesse",
-        "responses": {
-          "201": {
-            "description": "Skatepark lisatud lemmikutesse",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Skatepark added to favorites"
-                    },
-                    "favorite": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string"
-                        },
-                        "user_id": {
-                          "type": "string"
-                        },
-                        "skatepark_id": {
-                          "type": "string"
-                        }
-                      }
-                    },
-                    "skatepark": {
-                      "$ref": "#/components/schemas/Skatepark"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Vigane või puuduv skatepargi ID",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Kasutaja ei ole sisse logitud",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Skateparki ei leitud",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      },
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "description": "Skatepargi ID",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }
-      ]
-    },
     "/users": {
       "get": {
         "tags": [
@@ -748,5 +659,3 @@
     }
   ]
 }
-
-
