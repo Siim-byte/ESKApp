@@ -21,5 +21,6 @@ export interface SkateparkInput {
     city: string,
     description: string,
     address: string,
+    latitude: string,
+    longitude: string,
 }
-

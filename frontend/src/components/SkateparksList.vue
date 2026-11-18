@@ -6,6 +6,9 @@ import type { SkateparkSummary } from "../types/Skatepark";
 const skateparks = ref<SkateparkSummary[]>([])
 const loading = ref(false)
 const error = ref("")
+const emit = defineEmits<{
+    select: [id: string]
+}>()
 
 async function loadSkateparks() {
     loading.value = true
@@ -33,7 +36,7 @@ onMounted(loadSkateparks)
         <p v-else-if="skateparks.length === 0">No skateparks have been found</p>
         <ul v-else>
             <li v-for="skatepark in skateparks" :key="skatepark.id">
-                {{ skatepark.name }} ( {{ skatepark.id }})
+               <button @click="emit('select', skatepark.id) ">{{ skatepark.name }}</button> ( {{ skatepark.id }})
             </li>
         </ul>
     </section>
