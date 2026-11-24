@@ -22,7 +22,8 @@ const sequelize = new Sequelize(
             // }
             
         },
-        logging: console.log,
+        logging: process.env.DB_LOGGING === "false" ? false :
+        console.log,
     }
 );
 
