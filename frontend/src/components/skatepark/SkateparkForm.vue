@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue"
-import { skateparksServices } from "../services/skateparksServices"
-import type { SkateparkInput } from "../types/Skatepark"
+import { skateparksServices } from "../../services/skateparksServices"
+import type { SkateparkInput } from "../../types/Skatepark"
 
 const props = defineProps<{
   skateparkId?: string | null

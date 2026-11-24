@@ -47,7 +47,7 @@
 // }
 </script>
 
-<template>
+<!-- <template>
 <main>
   <h1>Skateparks!</h1>
   <button @click="createSkatepark">Add skatepark</button>
@@ -74,6 +74,23 @@
     documentation
   </p>
 </main>
+</template> -->
+<template>
+  <div>
+    <!-- päis -->
+    <header>
+      <h1>Skatepark app</h1>
+      <nav>
+        <!-- validate that user is logged in here, block off any routerlinks that unlogged in user shouldnt have access to -->
+        <RouterLink to="/skateparks">Skateparks</RouterLink>
+        <RouterLink to="/register">Users</RouterLink>
+      </nav>
+    </header>
+
+    <main>
+      <RouterView />
+    </main>
+  </div>
 </template>
 
 <style scoped></style>
