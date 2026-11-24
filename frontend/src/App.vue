@@ -79,11 +79,13 @@
   <div>
     <!-- päis -->
     <header>
-      <h1>Skatepark app</h1>
-      <nav>
+      
+      <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand text-light ">Skateparks</a>
         <!-- validate that user is logged in here, block off any routerlinks that unlogged in user shouldnt have access to -->
-        <RouterLink to="/skateparks">Skateparks</RouterLink>
+        <RouterLink class="nav-link" to="/games">Skateparks</RouterLink><!--  admin access only -->
         <RouterLink to="/register">Users</RouterLink>
+        <!-- admin has access to /users routerlink -->
       </nav>
     </header>
 

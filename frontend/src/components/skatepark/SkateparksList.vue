@@ -30,13 +30,13 @@ onMounted(loadSkateparks)
 <template>
     <section>
         <h2>Skateparks</h2>
-        <button @click="loadSkateparks">Refresh</button>
+        <button @click="loadSkateparks" class="btn btn-info">Refresh</button>
         <p v-if="loading">Loading skateparks...</p>
         <p v-else-if="error">{{ error }}</p>
         <p v-else-if="skateparks.length === 0">No skateparks have been found</p>
         <ul v-else>
             <li v-for="skatepark in skateparks" :key="skatepark.id">
-               <button @click="emit('select', skatepark.id) ">{{ skatepark.name }}</button> ( {{ skatepark.id }})
+               <button @click="emit('select', skatepark.id) "class="btn btn-info">{{ skatepark.name }}</button> ( {{ skatepark.id }})
             </li>
         </ul>
     </section>
