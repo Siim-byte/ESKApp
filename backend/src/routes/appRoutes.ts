@@ -3,6 +3,7 @@ import skateparkRoutes from "./skateparkRoutes.ts"
 import userRoutes from "./userRouters.ts"
 import commentRoutes from "./commentRoutes.ts"
 import favoriteRoutes from "./favoriteRoutes.ts"
+import authRoutes from "./authRoutes.ts"
 
 
 export default (app: express.Application): void => {
@@ -33,4 +34,9 @@ export default (app: express.Application): void => {
         // #swagger.tags = ['Favorites']
         next();
     }, favoriteRoutes);
+    
+        app.use("/authentication", (req, res, next) => {
+        // #swagger.tags = ['Authentication']
+        next();
+    }, authRoutes);
 };
