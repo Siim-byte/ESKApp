@@ -83,9 +83,10 @@
       <nav class="navbar navbar-expand navbar-dark bg-dark">
         <a class="navbar-brand text-light ">Skateparks</a>
         <!-- validate that user is logged in here, block off any routerlinks that unlogged in user shouldnt have access to -->
-        <RouterLink class="nav-link" to="/games">Skateparks</RouterLink><!--  admin access only -->
-        <RouterLink to="/register">Users</RouterLink>
-        <!-- admin has access to /users routerlink -->
+        <RouterLink class="nav-link" to="/skateparks">Skateparks</RouterLink><!--  admin access only -->
+        <RouterLink class="nav-link" to="/users">Users</RouterLink><!-- admin has access to /users routerlink -->
+        
+        <RouterLink class="nav-link" to="/register">Sign up</RouterLink><!-- guest only -->   
       </nav>
     </header>
 

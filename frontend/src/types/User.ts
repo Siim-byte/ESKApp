@@ -9,3 +9,12 @@ export interface User extends UserSummary {
     Is_blocked: boolean
     Password_hash: string 
 }
+export interface UserRegister {
+    Display_name: string
+    Email: string
+    Role: string
+    Created_at: string
+    Is_blocked: boolean
+    Password_hash: string 
+
+}
