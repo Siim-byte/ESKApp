@@ -14,6 +14,8 @@ router.put("/:id", (req, res, next) => {
     next();
 }, checkRequestBody, AuthenticationsController.refreshToken);
 
-router.delete("/:id", (req, res, next) => {
-    next();
-}, AuthenticationsController.invalidateToken);
+// router.delete("/:id", (req, res, next) => {
+//     next();
+// }, AuthenticationsController.invalidateToken);
+
+export default router
