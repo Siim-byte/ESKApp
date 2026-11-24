@@ -1,50 +1,50 @@
 <script setup lang="ts">
-import { ref } from "vue"
-import SkateparksList from './components/SkateparksList.vue';
-import SkateparkDetails from './components/SkateparkDetails.vue';
-import SkateparkForm from "./components/SkateparkForm.vue";
-import { skateparksServices } from "./services/skateparksServices.ts";
+// import { ref } from "vue"
+// import SkateparksList from './components/SkateparksList.vue';
+// import SkateparkDetails from './components/SkateparkDetails.vue';
+// import SkateparkForm from "./components/SkateparkForm.vue";
+// import { skateparksServices } from "./services/skateparksServices.ts";
 
-const selectedSkateparkId = ref<string | null>(null)
-const editing = ref(false)
-const listVersion = ref(0)
-const detailsVersion = ref(0)
-const error = ref("")
+// const selectedSkateparkId = ref<string | null>(null)
+// const editing = ref(false)
+// const listVersion = ref(0)
+// const detailsVersion = ref(0)
+// const error = ref("")
 
-function selectSkatepark(id: string) {
-  selectedSkateparkId.value = id
-  editing.value = false
-}
+// function selectSkatepark(id: string) {
+//   selectedSkateparkId.value = id
+//   editing.value = false
+// }
 
-function createSkatepark() {
-  selectedSkateparkId.value = null
-  editing.value = true
-}
+// function createSkatepark() {
+//   selectedSkateparkId.value = null
+//   editing.value = true
+// }
 
-function skateparkSaved() {
-  editing.value = false
-  listVersion.value++
-  detailsVersion.value++
-}
+// function skateparkSaved() {
+//   editing.value = false
+//   listVersion.value++
+//   detailsVersion.value++
+// }
 
-async function deleteSkatepark() {
-  if (!selectedSkateparkId.value) return
-  if (!confirm("Delete this skatepark?")) return
+// async function deleteSkatepark() {
+//   if (!selectedSkateparkId.value) return
+//   if (!confirm("Delete this skatepark?")) return
 
-  error.value = ""
+//   error.value = ""
 
-  try {
-    await skateparksServices.delete(selectedSkateparkId.value)
-    selectedSkateparkId.value = null
-    editing.value = false
-    listVersion.value++
-  } catch (err) {
-    error.value = "Cannot delete this skatepark"
-    console.error(err);
+//   try {
+//     await skateparksServices.delete(selectedSkateparkId.value)
+//     selectedSkateparkId.value = null
+//     editing.value = false
+//     listVersion.value++
+//   } catch (err) {
+//     error.value = "Cannot delete this skatepark"
+//     console.error(err);
     
-  }
+//   }
 
-}
+// }
 </script>
 
 <template>

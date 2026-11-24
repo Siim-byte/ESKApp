@@ -67,7 +67,11 @@ async function saveSkatepark() {
     }
   } catch (err) {
     error.value = "Saving failed"
-    console.error(err)
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error('An unknown error occured:', err);
+    }
   } finally {
     saving.value = false
   }
