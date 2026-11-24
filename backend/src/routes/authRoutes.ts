@@ -1,6 +1,7 @@
 import express from "express";
 import checkRequestBody from "../controllers/middleware/checkRequestBody.ts";
 import AuthenticationsController from "../controllers/AuthenticationsController.ts";
+import jwtAuth from "../controllers/middleware/jwtAuth.ts";
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ router.get("/", (req, res, next) => {
 
 router.put("/:id", (req, res, next) => {
     next();
-}, checkRequestBody, AuthenticationsController.refreshToken);
+}, checkRequestBody, jwtAuth, AuthenticationsController.refreshToken);
 
 router.delete("/:id", (req, res, next) => {
      next();
