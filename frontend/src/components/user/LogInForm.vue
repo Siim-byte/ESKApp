@@ -2,18 +2,22 @@
 import router from "@/router"
 import { authenticationsServices } from "@/services/authenticationsServices"
 import { ref } from "vue"
+import { useRoute } from "vue-route"
 
 const error = ref("")
 const email = ref("")
 const password = ref("")
 const saving = ref(false)
+const route = useRoute()
 
 const handleLogin = async () => {
     try {
         await authenticationsServices.login(email.value, password.value)
-        router.push("/users")
+        const redirectPath = (route.query.redirect as string) || "/users"
+        router.push(redirectPath)
     } catch (err) {
         if (err instanceof Error) {
+            error.value = "Invalid email or password"
             console.error(err.message);
         } else {
             console.error('An unknown error occurred:', err);
