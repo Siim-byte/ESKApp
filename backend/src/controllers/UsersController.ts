@@ -39,12 +39,16 @@ const UsersController = {
             return res.status(403).send({error:"Access denied"})
         }
         const handler = await db.users.findByPk(res.locals.userId)
-        if (handler?.UserStatus !== "admin" || !handler) {
+        if (!handler) {
             return res.status(403).send({error:"Access denied"})
         } 
+        let users;
+        if(handler?.UserStatus === "admin") {
+            users = await db.users.findAll();
+        } else {
+            users = [handler]
+        }
         try {
-            const users = await db.users.findAll();
-            console.log("getAll tulemus:", users);
             
             if (!users || users.length === 0) {
                 return res.status(200).send([]);

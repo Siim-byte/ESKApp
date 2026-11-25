@@ -3,7 +3,7 @@ import type {User, UserSummary, UserRegister} from "../types/User"
 const API_URL = import.meta.env.VITE_BACKEND_URL
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const response = await fetch(API_URL + endpoint, options)
+    const response = await fetch(API_URL + endpoint, {...options, credentials: "include"})
     if(!response.ok) {
         throw new Error(
             `Request has failed, status is: ${response.status}`
