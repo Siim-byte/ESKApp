@@ -6,7 +6,7 @@ import jwtAuth from "../controllers/middleware/jwtAuth.ts";
 const router = express.Router();
 
 //both email and password are in the body, neither are parameter
-router.get("/", (req, res, next) => {
+router.post("/", (req, res, next) => {
     /* put your swag here*/
     next();
 }, AuthenticationsController.newToken);

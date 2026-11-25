@@ -39,9 +39,9 @@ onMounted(loadUsers)
         <p v-else-if="users.length === 0">No users found.</p>
         <ul v-else>
             <li v-for="user in users" :key="user.id">
-                <button @click="emit('select', user.id)">{{ user.UserName }}</button>
-                <span>{{ user.EmailAddress }}</span>
-                <span>{{ user.UserStatus }}</span>
+                <button @click="emit('select', user.id)">{{ user.Display_name }}</button>
+                <span>{{ user.Email }}</span>
+                <span>{{ user.Role }}</span>
                 <span>{{ user.id }}</span>
             </li>
         </ul>

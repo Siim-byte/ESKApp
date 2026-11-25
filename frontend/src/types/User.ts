@@ -16,5 +16,6 @@ export interface UserRegister {
     Created_at: string
     Is_blocked: boolean
     Password_hash: string 
+    PasswordConfirmation: null
 
 }

@@ -39,7 +39,7 @@ watch(
         <p v-if="loading">Loading user...</p>
         <p v-else-if="error">{{ error }}</p>
         <div v-else-if="user">
-            <h3>{{ user.UserName }}</h3><br/>
+            <h3>{{ user.Display_name }}</h3><br/>
             <p>Id in app: {{ user.id }}</p><br/>
             <p>Email: {{ user.Email }}</p><br/>
             <p>Role: {{ user.Role }}</p><br/>

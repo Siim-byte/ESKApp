@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from "vue"
 import { usersServices } from "@/services/usersServices";
 import type { UserRegister } from "@/types/User"
+import router from "@/router";
 
 const props = defineProps<{
     userId?: string | null
@@ -19,8 +20,9 @@ function emptyUser(): UserRegister {
         Display_name: "",
         Email: "",
         Role: "",
+        Is_blocked: false,
         Created_at: new Date().toDateString(),
-        Password: "",
+        Password_hash: "",
         PasswordConfirmation: null
     }
 }
@@ -33,6 +35,7 @@ async function register() {
 
     try {
         await usersServices.register(form.value)
+            router.replace("/login")
             console.log("try")
     } catch (err) {
         error.value = "Saving failed"
@@ -60,7 +63,7 @@ async function register() {
             <input id="Email" v-model="form.Email" required/><br/><br/>
 
             <label for="Password">Password <span color="red">*</span></label><br/>
-            <input type="password" id="Password" v-model="form.Password" required/><br/><br/>
+            <input type="password" id="Password" v-model="form.Password_hash" required/><br/><br/>
 
             <label for="PasswordConfirmation">Confirm password <span color="red">*</span></label><br/>
             <input type="password" id="PasswordConfirmation" v-model="form.PasswordConfirmation" required/><br/><br/>
