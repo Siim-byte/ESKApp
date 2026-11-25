@@ -225,6 +225,25 @@ describe("UsersController", () => {
     });
     //Paroolid ei kattu loomisel (406). kontrollib create meetodit, password_hash ja passwordConfirmation on erinevad
 
+    test("Return_RequiredFieldsMissing_With400Status", async () =>{
+    const req = {
+        body: {
+            password_hash: "Password123",
+            passwordConfirmation: "Password123",
+            role: "User",
+        },
+    } as unknown as Request;
 
+    const res = {
+        status: vi.fn().mockReturnThis(),
+        send: vi.fn().mockReturnThis(),
+    } as unknown as Response;
+
+    await _UsersController.create(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.send).toHaveBeenCalledWith({error: "Missing parameters, please check your info."});
+    });
+    //Vajalikud andmed puuduvad loomisel (400). kontrollib create meetodit, tagastab error sõnumi
 
 })
