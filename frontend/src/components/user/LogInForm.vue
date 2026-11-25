@@ -2,7 +2,7 @@
 import router from "@/router"
 import { authenticationsServices } from "@/services/authenticationsServices"
 import { ref } from "vue"
-import { useRoute } from "vue-route"
+import { useRoute } from "vue-router"
 
 const error = ref("")
 const email = ref("")
@@ -22,6 +22,8 @@ const handleLogin = async () => {
         } else {
             console.error('An unknown error occurred:', err);
         }
+    }finally {
+        saving.value = false
     }
 }
 

@@ -24,5 +24,12 @@ export async function apiFetch<T>(endpoint:string, options: RequestInit = {}): P
         const errorData = await response.json().catch(() => null)
         throw new Error(errorData?.message || `Request has failed, status is: ${response.status}`)
     }
-    return response.json() as Promise<T>
+        
+    if (response.status === 204) 
+    {
+        return undefined as T
+    }
+
+    const text = await response.text()
+    return text ? (JSON.parse(text) as T) : (undefined as T)
 }
