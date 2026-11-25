@@ -68,9 +68,14 @@ const UsersController = {
     },
 
     async getById(req: express.Request, res: express.Response) {
-        if (req.params.id !== res.locals.userId) {
+        if (!res.locals.userId) {
             return res.status(403).send({error:"Access denied"})
         }
+        const handler = await db.users.findByPk(res.locals.userId) //küpsise kasutaja
+        //kas küpsise kasutaja on admin
+        if (handler?.UserStatus !== "admin" || !handler) {
+            return res.status(403).send({error:"Access denied"})
+        } 
         const user = await UsersController.getUser(req,res)
         if (!user) {
             return
@@ -145,7 +150,7 @@ const UsersController = {
             return res.status(403).send({error:"Access denied"})
         }
         const handler = await db.users.findByPk(res.locals.userId)
-        if (handler?.UserStatus !== "admin" || !handler) {
+        if (handler?.UserStatus !== "admin") {
             return res.status(403).send({error:"Access denied"})
         } 
         const userToBeDeleted = await UsersController.getUser(req, res)
