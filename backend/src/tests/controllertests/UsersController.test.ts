@@ -200,5 +200,31 @@ describe("UsersController", () => {
         expect(res.status).toHaveBeenCalledWith(404)
         expect(res.send).toHaveBeenCalledWith({ error: `user with this id does not exist: ${id}`})
     })
+    //Kasutajat ei leita (404). Kontrollib getById (deleteById saab kontrollida aga ei kontrollida selles testis) käitumist, kui andmebaasist ei leita antud ID-ga kasutajat ja findByPk tagastab null.
+
+    test("Return_PasswordsDontMatch_With406Status", async () => {
+        const req = {
+            body: {
+                display_name: "joonas",
+                email: "j@j.com",
+                password_hash: "Password123",
+                passwordConfirmation: "Password",
+                role: "User",
+            },
+        } as unknown as Request;
+
+        const res = {
+            status: vi.fn().mockReturnThis(),
+            send: vi.fn().mockReturnThis(),
+        } as unknown as Response;
+
+        await _UsersController.create(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(406);
+        expect(res.send).toHaveBeenCalled();
+    });
+    //Paroolid ei kattu loomisel (406). kontrollib create meetodit, password_hash ja passwordConfirmation on erinevad
+
+
 
 })
