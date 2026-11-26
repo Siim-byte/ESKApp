@@ -6,30 +6,31 @@ import SkateparksController from "./SkateparksController.ts";
 
 const UsersController = {
     async create(req: express.Request, res: express.Response) {
-        const incomingPassword = req.body.Password_hash || req.body.password_hash || req.body.Password || req.body.password;
-        const incomingConfirmation = req.body.PasswordConfirmation || req.body.passwordConfirmation;
+        req.body.password = req.body.Password_hash || req.body.password_hash || req.body.Password || req.body.password;
+        req.body.passwordConfirmation = req.body.PasswordConfirmation || req.body.passwordConfirmation;
 
-        if (!req.body.display_name || 
-        !req.body.email ||
-        !incomingPassword ||
-        !incomingConfirmation) {
-            return res.status(400)
-            .send({error:"Missing parameters, please check your info."})
+        const requiredFields = ['display_name', 'email', 'password', 'passwordConfirmation']
+        const missingFields = requiredFields.filter(field => !req.body[field]);
+
+        if (missingFields.length > 0 ) {
+            return res.status(400).send({
+                error: "missing parameters, please check your info.",
+                missing: missingFields
+            })
         }
-
-        if (incomingPassword !== incomingConfirmation) {
-            return res.status(406)
-            .send({error:"Passwords do not match, please check your info."})            
+        if (req.body.password !== req.body.passwordConfirmation) {
+            return res.status(406).send({
+                error: "Passwords do not match, please check your information"
+            })
         }
+            const passwordHash = await Utilities.gimmePassword(req.body.password)
 
-        const passwordHash = await Utilities.gimmePassword(incomingPassword)
-
-        const result = await db.users.create({
-            display_name: req.body.display_name,
-            email: req.body.email,
-            role: req.body.role || "user",
-            password_hash: passwordHash
-        })
+            const result = await db.users.create({
+                display_name: req.body.display_name,
+                email: req.body.email,
+                role: req.body.role || "user",
+                password_hash: passwordHash
+        });
 
         return res.location(`${Utilities.getBaseURL(req)}/users/${result.id}`).sendStatus(201);
     },

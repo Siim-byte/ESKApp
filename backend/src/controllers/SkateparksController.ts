@@ -2,25 +2,20 @@ import * as express from "express"
 import { db } from "../db.ts"
 import Utilities from "../Utilities.ts"
 import { v7 as uuidv7 } from "uuid"
+import { error } from "node:console";
+import type { Skatepark } from "../models/skatepark.ts"
 
 const SkateparksController = {
     async create(req: express.Request, res: express.Response){
         const incomingAddress = req.body.address || req.body.aadress || req.body.adress;
+        const requiredFields = ['name', 'description', 'city', 'latitude', 'longitude'];
+        const missingFields = requiredFields.filter(filter => !req.body[field]);
 
-        if (
-            !req.body.name || 
-            !req.body.description ||
-            !req.body.city ||
-            !incomingAddress || 
-            !req.body.latitude ||
-            !req.body.longitude
-            // !req.body.admin_id
-        ) {
-            return res.status(400).send(
-                {
-                    error: "Missing parameters, please review data"
-                }
-            );
+        if (missingFields.length > 0) {
+            return res.status(400).send({
+                error: "Missing parameters, please review data",
+                missing: missingFields
+            })
         }
 
         const newSkatepark = {
