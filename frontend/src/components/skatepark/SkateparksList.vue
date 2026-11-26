@@ -36,7 +36,7 @@ onMounted(loadSkateparks)
         <p v-else-if="skateparks.length === 0">No skateparks have been found</p>
         <ul v-else>
             <li v-for="skatepark in skateparks" :key="skatepark.id">
-               <button @click="emit('select', skatepark.id) "class="btn btn-info">{{ skatepark.name }}</button> ( {{ skatepark.id }})
+               <button :id="skatepark.id" @click="emit('select', skatepark.id) "class="btn btn-info">{{ skatepark.name }}</button> ( {{ skatepark.id }})
             </li>
         </ul>
     </section>

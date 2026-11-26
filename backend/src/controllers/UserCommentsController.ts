@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { db } from "../db.ts";
 import { connect, sync } from "../db.ts";
-import Utilities from "../Utilities.ts";
+import Utilities from "./Utilities.ts";
 import { v7 as uuidv7 } from "uuid";
 import {error} from "node:console";
 import { Comment } from "../models/comment.ts";

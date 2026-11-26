@@ -1,6 +1,6 @@
 import * as express from "express";
 import { db } from "../db.ts";
-import Utilities from "../Utilities.ts";
+import Utilities from "./Utilities.ts";
 import { User } from "../models/User.ts";
 import SkateparksController from "./SkateparksController.ts";
 

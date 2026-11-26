@@ -105,7 +105,7 @@ watch(() => props.skateparkId, loadSkatepark, { immediate: true })
       <label for="description">Description</label><br />
       <textarea id="description" v-model="form.description" required></textarea><br /><br />
 
-      <button type="submit" :disabled="saving">
+      <button id="saveSkatepark" type="submit" :disabled="saving">
         {{ saving ? "Saving skatepark..." : "Save Skatepark" }}
       </button>
     </form>

@@ -35,12 +35,12 @@ watch( () => props.skateparkId, loadSkatepark, {immediate: true})
         <p v-if="loading">Loading skatepark info</p>
         <p v-else-if="error">{{ error }}</p>
         <div v-else-if="skatepark">
-            <h3>{{ skatepark.name }}</h3>
-            <p>{{ skatepark.description }}</p>
-            <p>{{ skatepark.city }}</p>
-            <p>{{ skatepark.address }}</p>
-            <p>{{ skatepark.latitude }}</p>
-            <p>{{ skatepark.longitude }}</p>
+            <h3 id="skateparkNameDetail">{{ skatepark.name }}</h3>
+            <p id="skateparkDescriptionDetail">{{ skatepark.description }}</p>
+            <p id="skateparkCityDetail">{{ skatepark.city }}</p>
+            <p id="skateparkAddressDetail">{{ skatepark.address }}</p>
+            <p id="skateparkLatitudeDetail">{{ skatepark.latitude }}</p>
+            <p id="skateparkLongitudeDetail">{{ skatepark.longitude }}</p>
         </div>
     </section>
 </template>
