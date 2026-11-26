@@ -80,13 +80,13 @@
     <!-- päis -->
     <header>
       
-      <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <nav class="navbar navbar-expand navbar-dark bg-dark px-3" data-bs-theme="dark">
         <a class="navbar-brand text-light ">Skateparks</a>
         <!-- validate that user is logged in here, block off any routerlinks that unlogged in user shouldnt have access to -->
-        <RouterLink class="nav-link" to="/skateparks">Skateparks</RouterLink><!--  admin access only -->
-        <RouterLink class="nav-link" to="/users">Users</RouterLink><!-- admin has access to /users routerlink -->
+        <RouterLink id="RL_Skateparks" class="nav-link" to="/skateparks">Skateparks</RouterLink><!--  admin access only -->
+        <RouterLink id="RL_Users" class="nav-link" to="/users">Users</RouterLink><!-- admin has access to /users routerlink -->
         
-        <RouterLink class="nav-link" to="/register">Sign up</RouterLink><!-- guest only -->   
+        <RouterLink id="RL_SignUp" class="nav-link" to="/register">Sign up</RouterLink><!-- guest only -->   
       </nav>
     </header>
 
