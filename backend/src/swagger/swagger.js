@@ -18,7 +18,7 @@ const doc = {
     ]
 };
 
-const outputFile = '../docs/swagger-autogen.json';
+const outputFile = '../docs/swagger-autogen1.json';
 const routes = ['../routes/appRoutes.ts']
 
 
